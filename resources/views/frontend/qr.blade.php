@@ -72,22 +72,22 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto border border-gray-600 rounded-xl p-6">
         <!-- Left Column - Bank 1 -->
         <div class="space-y-6">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
 
                 <div class="space-y-4">
                     <div>
-                        <p class="font-semibold text-gray-700 dark:text-gray-300">Bank Name</p>
-                        <p class="text-gray-900 dark:text-white">Lumbini Bikash Bank, Lele Branch</p>
+                        <p class="font-semibold text-gray-700">Bank Name</p>
+                        <p class="text-gray-900">Lumbini Bikash Bank, Lele Branch</p>
                     </div>
 
                     <div>
-                        <p class="font-semibold text-gray-700 dark:text-gray-300">Account Name</p>
-                        <p class="text-gray-900 dark:text-white">Prabin Dangol</p>
+                        <p class="font-semibold text-gray-700">Account Name</p>
+                        <p class="text-gray-900">Prabin Dangol</p>
                     </div>
 
                     <div>
-                        <p class="font-semibold text-gray-700 dark:text-gray-300">Account Number</p>
-                        <p class="text-gray-900 dark:text-white font-mono">0411020131907000001</p>
+                        <p class="font-semibold text-gray-700">Account Number</p>
+                        <p class="text-gray-900 font-mono">0411020131907000001</p>
                     </div>
                 </div>
             </div>
@@ -98,23 +98,23 @@
 
         <!-- Right Column - Bank 2 (Add your second bank here) -->
         <div class="space-y-6">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
 
 
                 <div class="space-y-4">
                     <div>
-                        <p class="font-semibold text-gray-700 dark:text-gray-300">Wallet</p>
-                        <p class="text-gray-900 dark:text-white">Esewa</p>
+                        <p class="font-semibold text-gray-700">Wallet</p>
+                        <p class="text-gray-900">Esewa</p>
                     </div>
 
                     <div>
-                        <p class="font-semibold text-gray-700 dark:text-gray-300">Account Name</p>
-                        <p class="text-gray-900 dark:text-white">Prabin Dangol</p>
+                        <p class="font-semibold text-gray-700">Account Name</p>
+                        <p class="text-gray-900">Prabin Dangol</p>
                     </div>
 
                     <div>
-                        <p class="font-semibold text-gray-700 dark:text-gray-300">Esewa Number</p>
-                        <p class="text-gray-900 dark:text-white font-mono">+977-9808083620</p>
+                        <p class="font-semibold text-gray-700">Esewa Number</p>
+                        <p class="text-gray-900 font-mono">+977-9808083620</p>
                     </div>
 
                 </div>
@@ -122,18 +122,18 @@
 
         </div>
          <!-- Common instruction below both columns -->
-    <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+    <p class="text-sm text-gray-600 text-center">
                 Please include your name/reference in the remarks section
             </p>
 
             <!-- Optional: Instructions for second bank -->
-            <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+            <p class="text-sm text-gray-600 text-center">
                 After transfer, send screenshot to WhatsApp: +977-9765726294
             </p>
     </div>
 
 
-    <p class="mt-10 text-gray-600 dark:text-gray-400 text-center text-lg">
+    <p class="mt-10 text-gray-600 text-center text-lg">
         After successful payment, please send the transaction screenshot to:
         <br class="md:hidden">
         <span class="text-yellow-600 font-semibold hover:underline">

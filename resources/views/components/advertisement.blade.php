@@ -3,8 +3,8 @@
 
     <!-- Header -->
     <div class="text-center mb-6">
-        <h2 class="text-3xl font-bold text-gray-800 dark:text-white">Advertisements</h2>
-        <p class="text-gray-500 dark:text-gray-400 mt-2">Sponsored promotions</p>
+        <h2 class="text-3xl font-bold text-gray-800">Advertisements</h2>
+        <p class="text-gray-500 mt-2">Sponsored promotions</p>
     </div>
 
     <!-- Swiper Container -->
@@ -16,7 +16,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-8">
 
                         @foreach($adsChunk as $ad)
-                            <div class="relative overflow-hidden rounded-xl shadow-lg bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+                            <div class="relative overflow-hidden rounded-xl shadow-lg bg-white transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
 
                                 @if($ad->link)
                                     <a href="{{ $ad->link }}" target="_blank" rel="noopener noreferrer" class="block w-full h-full">
@@ -28,7 +28,7 @@
                                              class="w-full h-64 md:h-80 lg:h-96 object-cover transition-transform duration-500 hover:scale-110">
                                     @else
                                         <!-- Fallback if no image -->
-                                        <div class="w-full h-64 md:h-80 lg:h-96 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+                                        <div class="w-full h-64 md:h-80 lg:h-96 bg-gray-200 flex items-center justify-center text-gray-500">
                                             Ad Placeholder
                                         </div>
                                     @endif
