@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,19 @@
     <link rel="stylesheet" href="<?php echo e(asset('fontawesome/css/all.min.css')); ?>">
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
     <link rel="stylesheet" href="<?php echo e(asset('frontend/style.css')); ?>">
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(Auth::guard('agent')->user()): ?>
+        <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+        <script>
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(async function(OneSignal) {
+                await OneSignal.init({
+                    appId: "f29faee7-87f1-44f0-b855-88bd00868fca",
+                });
+            });
+        </script>
+    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 </head>
+
 <body>
     <?php if (isset($component)) { $__componentOriginalfd1f218809a441e923395fcbf03e4272 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalfd1f218809a441e923395fcbf03e4272 = $attributes; } ?>
@@ -60,5 +73,6 @@
 <?php unset($__componentOriginal8a8716efb3c62a45938aca52e78e0322); ?>
 <?php endif; ?>
 </body>
+
 </html>
 <?php /**PATH G:\lelesastogharagga_laravel\realestate\resources\views/components/frontend-layout.blade.php ENDPATH**/ ?>
