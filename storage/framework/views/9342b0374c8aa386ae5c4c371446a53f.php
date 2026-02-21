@@ -149,4 +149,4 @@ $company = \App\Models\Company::where('status', true)->first();
     </div>
 
 </footer>
-<?php /**PATH G:\lelesastogharagga_laravel\realestate\resources\views/components/footer.blade.php ENDPATH**/ ?>
+<?php /**PATH G:\lelesastogharjagga_laravel_new\lelesastogharjaggakarobar_laravel\resources\views/components/footer.blade.php ENDPATH**/ ?>

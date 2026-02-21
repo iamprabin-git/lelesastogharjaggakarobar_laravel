@@ -90,4 +90,4 @@ $company = \App\Models\Company::where('status', true)->first();
         mobileMenu.classList.toggle('hidden');
     });
 </script>
-<?php /**PATH G:\lelesastogharagga_laravel\realestate\resources\views/components/header.blade.php ENDPATH**/ ?>
+<?php /**PATH G:\lelesastogharjagga_laravel_new\lelesastogharjaggakarobar_laravel\resources\views/components/header.blade.php ENDPATH**/ ?>

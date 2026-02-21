@@ -305,4 +305,4 @@
 <?php $component = $__componentOriginal292c42cda3271405dc664835e31595e3; ?>
 <?php unset($__componentOriginal292c42cda3271405dc664835e31595e3); ?>
 <?php endif; ?>
-<?php /**PATH G:\lelesastogharagga_laravel\realestate\resources\views/frontend/home.blade.php ENDPATH**/ ?>
+<?php /**PATH G:\lelesastogharjagga_laravel_new\lelesastogharjaggakarobar_laravel\resources\views/frontend/home.blade.php ENDPATH**/ ?>

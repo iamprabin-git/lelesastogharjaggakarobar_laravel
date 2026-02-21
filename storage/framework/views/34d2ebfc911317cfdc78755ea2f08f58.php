@@ -59,4 +59,4 @@
         </div>
 
     </form>
-<?php /**PATH G:\lelesastogharagga_laravel\realestate\resources\views/components/property-search.blade.php ENDPATH**/ ?>
+<?php /**PATH G:\lelesastogharjagga_laravel_new\lelesastogharjaggakarobar_laravel\resources\views/components/property-search.blade.php ENDPATH**/ ?>

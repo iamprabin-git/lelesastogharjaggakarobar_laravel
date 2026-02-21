@@ -101,4 +101,4 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <?php $__env->stopPush(); ?>
 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-<?php /**PATH G:\lelesastogharagga_laravel\realestate\resources\views/components/advertisement.blade.php ENDPATH**/ ?>
+<?php /**PATH G:\lelesastogharjagga_laravel_new\lelesastogharjaggakarobar_laravel\resources\views/components/advertisement.blade.php ENDPATH**/ ?>

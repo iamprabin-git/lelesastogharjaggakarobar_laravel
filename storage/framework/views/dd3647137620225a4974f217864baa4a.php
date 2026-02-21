@@ -61,4 +61,4 @@
 <?php endif; ?>
 </body>
 </html>
-<?php /**PATH G:\lelesastogharagga_laravel\realestate\resources\views/components/frontend-layout.blade.php ENDPATH**/ ?>
+<?php /**PATH G:\lelesastogharjagga_laravel_new\lelesastogharjaggakarobar_laravel\resources\views/components/frontend-layout.blade.php ENDPATH**/ ?>
