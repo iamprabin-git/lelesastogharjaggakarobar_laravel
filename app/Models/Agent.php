@@ -7,9 +7,11 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Agent extends Authenticatable implements FilamentUser
 {
+    use Notifiable;
     // Add ALL fields that will be updated via forms or Filament
     protected $fillable = [
         'name',

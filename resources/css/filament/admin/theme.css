@@ -1,0 +1,53 @@
+
+@tailwind utilities;
+
+/* =============================================
+   Override Filament default widget container
+   → 2 columns on medium+ screens
+============================================= */
+.filament-widgets-container {
+    @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 !important;
+}
+
+/* Make sure child widgets fill their grid cell */
+.filament-widgets-container > * {
+    @apply col-span-1;
+}
+
+/* On very small screens → full width */
+@media (max-width: 767px) {
+    .filament-widgets-container > * {
+        @apply col-span-full;
+    }
+}
+
+/* =============================================
+   Make stats cards more modern / premium
+============================================= */
+.fi-wg-stats-overview-widget {
+    @apply rounded-2xl shadow-md border border-gray-200/70 dark:border-gray-700/70 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300;
+}
+
+.fi-wg-stats-overview-stat {
+    @apply p-6;
+}
+
+.fi-wg-stats-overview-label {
+    @apply text-sm font-medium text-gray-600 dark:text-gray-300;
+}
+
+.fi-wg-stats-overview-value {
+    @apply text-3xl font-bold text-gray-900 dark:text-white mt-1;
+}
+
+/* Icons in stats cards */
+.fi-wg-stats-overview-icon {
+    @apply text-4xl opacity-90;
+}
+
+/* Optional: make some stats cards span full row on small screens */
+@media (max-width: 1023px) {
+    .fi-wg-stats-overview-widget.full-span {
+        @apply col-span-full;
+    }
+}
