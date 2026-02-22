@@ -143,40 +143,103 @@
 <section class="container mx-auto py-15 px-6">
     <h2 class="text-2xl font-bold mb-4 p-3 bg-green-600 text-white text-center">Latest Properties</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $latestProperties; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $property): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-            <div class="relative bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+       <div class="grid md:grid-cols-3 gap-8">
 
-                <!-- Rent/Buy Badge -->
-                <div class="absolute top-3 left-3 bg-blue-600 text-white text-xs px-3 py-1 rounded-full capitalize">
-                    <?php echo e($property->type); ?>
+<?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $latestProperties; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $property): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+    <a href="<?php echo e(route('properties.show', $property)); ?>"
+       class="group block bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
 
-                </div>
+        
+        <div class="relative overflow-hidden">
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($property->images)): ?>
+                <img src="<?php echo e(asset('storage/'.$property->images[0])); ?>"
+                     class="h-60 w-full object-cover transition-transform duration-500 group-hover:scale-110">
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                <!-- Property ID -->
-                <div class="absolute top-3 right-3 bg-black/70 text-white text-xs px-3 py-1 rounded">
-                    ID: <?php echo e($property->id); ?>
+            
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($property->is_featured ?? false): ?>
+                <span class="absolute top-4 left-0 bg-yellow-400 text-black text-xs px-3 py-1 rounded-r-full font-semibold">
+                    Featured
+                </span>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                </div>
+            
+            <span class="absolute top-4 left-4 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
+                Property_ID-<?php echo e(str_pad($property->id, 5, '0', STR_PAD_LEFT)); ?>
 
-                <!-- Property Image -->
-                <img src="<?php echo e(isset($property->images[0]) ? asset('storage/'.$property->images[0]) : asset('images/placeholder.png')); ?>"
-                     alt="<?php echo e($property->title); ?>"
-                     class="w-full h-48 object-cover">
+            </span>
 
-                <!-- Card Body -->
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold mb-1"><?php echo e($property->title); ?></h3>
-                    <p class="text-gray-600 text-sm mb-2"><?php echo e($property->location ?? $property->city); ?></p>
-                    <p class="text-blue-600 font-bold text-lg">
-                        Rs. <?php echo e(number_format($property->price, 2)); ?>
+            
+            <span class="absolute top-4 right-4
+                <?php echo e($property->type == 'rent' ? 'bg-blue-600' : 'bg-green-600'); ?>
 
-                        <span class="text-sm text-gray-500"></span>
-                    </p>
-                </div>
+                text-white text-xs px-3 py-1 rounded-full capitalize">
+                <?php echo e($property->type); ?>
+
+            </span>
+
+            
+            <span class="absolute bottom-4 left-4
+                <?php echo e($property->availability == 'available' ? 'bg-green-500' : 'bg-red-500'); ?>
+
+                text-white text-xs px-3 py-1 rounded-full capitalize">
+                <?php echo e($property->availability); ?>
+
+            </span>
+
+            
+            <button class="absolute bottom-4 right-4 text-red-500 text-lg hover:scale-110 transition">
+                <i class="fa-regular fa-heart"></i>
+            </button>
+
+        </div>
+
+        <div class="p-6">
+
+            
+            <h3 class="text-xl font-bold mb-2 text-center">
+                <?php echo e($property->title); ?>
+
+            </h3>
+
+            
+            <div class="flex justify-between text-sm text-gray-600 mb-4">
+                <p class="text-gray-500">
+                    <i class="fa-solid fa-location-dot mr-1"></i>
+                    <?php echo e($property->location ?? $property->city); ?>
+
+                </p>
+                <p class="text-primary font-bold text-lg">
+                    Rs. <?php echo e(number_format($property->price)); ?>
+
+                </p>
             </div>
-        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-    </div>
+
+            
+            <div class="flex gap-4 text-sm text-gray-600 mb-4">
+                <span><?php echo e($property->bedrooms ?? 0); ?> <i class="fa-solid fa-bed ml-1"></i></span>
+                <span><?php echo e($property->bathrooms ?? 0); ?> <i class="fa-solid fa-bath ml-1"></i></span>
+                <span><?php echo e($property->area ?? 0); ?> <i class="fa-solid fa-chart-area ml-1"></i></span>
+            </div>
+
+            
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($property->agent): ?>
+                <div class="flex items-center gap-3 mt-4">
+                    <p class="text-sm text-gray-500"> Agent : </p>
+                    <p class="text-sm font-semibold"><?php echo e($property->agent->name); ?></p>
+
+                    </div>
+
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+        </div>
+    </a>
+
+<?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+    <p>No properties found.</p>
+<?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+</div>
     <div class="text-center mt-6">
     <a href="/properties"
        class="inline-block bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition">

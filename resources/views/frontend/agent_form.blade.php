@@ -39,7 +39,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('agent_store') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('agent.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

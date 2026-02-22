@@ -109,37 +109,95 @@
 <section class="container mx-auto py-15 px-6">
     <h2 class="text-2xl font-bold mb-4 p-3 bg-green-600 text-white text-center">Latest Properties</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        @foreach($latestProperties as $property)
-            <div class="relative bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+       <div class="grid md:grid-cols-3 gap-8">
 
-                <!-- Rent/Buy Badge -->
-                <div class="absolute top-3 left-3 bg-blue-600 text-white text-xs px-3 py-1 rounded-full capitalize">
-                    {{ $property->type }}
-                </div>
+@forelse($latestProperties as $property)
+    <a href="{{ route('properties.show', $property) }}"
+       class="group block bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
 
-                <!-- Property ID -->
-                <div class="absolute top-3 right-3 bg-black/70 text-white text-xs px-3 py-1 rounded">
-                    ID: {{ $property->id }}
-                </div>
+        {{-- Image --}}
+        <div class="relative overflow-hidden">
+            @if(!empty($property->images))
+                <img src="{{ asset('storage/'.$property->images[0]) }}"
+                     class="h-60 w-full object-cover transition-transform duration-500 group-hover:scale-110">
+            @endif
 
-                <!-- Property Image -->
-                <img src="{{ isset($property->images[0]) ? asset('storage/'.$property->images[0]) : asset('images/placeholder.png') }}"
-                     alt="{{ $property->title }}"
-                     class="w-full h-48 object-cover">
+            {{-- Featured Ribbon --}}
+            @if($property->is_featured ?? false)
+                <span class="absolute top-4 left-0 bg-yellow-400 text-black text-xs px-3 py-1 rounded-r-full font-semibold">
+                    Featured
+                </span>
+            @endif
 
-                <!-- Card Body -->
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold mb-1">{{ $property->title }}</h3>
-                    <p class="text-gray-600 text-sm mb-2">{{ $property->location ?? $property->city }}</p>
-                    <p class="text-blue-600 font-bold text-lg">
-                        Rs. {{ number_format($property->price, 2) }}
-                        <span class="text-sm text-gray-500"></span>
-                    </p>
-                </div>
+            {{-- Property ID --}}
+            <span class="absolute top-4 left-4 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
+                Property_ID-{{ str_pad($property->id, 5, '0', STR_PAD_LEFT) }}
+            </span>
+
+            {{-- Property Type --}}
+            <span class="absolute top-4 right-4
+                {{ $property->type == 'rent' ? 'bg-blue-600' : 'bg-green-600' }}
+                text-white text-xs px-3 py-1 rounded-full capitalize">
+                {{ $property->type }}
+            </span>
+
+            {{-- Status Badge --}}
+            <span class="absolute bottom-4 left-4
+                {{ $property->availability == 'available' ? 'bg-green-500' : 'bg-red-500' }}
+                text-white text-xs px-3 py-1 rounded-full capitalize">
+                {{ $property->availability }}
+            </span>
+
+            {{-- Wishlist Heart --}}
+            <button class="absolute bottom-4 right-4 text-red-500 text-lg hover:scale-110 transition">
+                <i class="fa-regular fa-heart"></i>
+            </button>
+
+        </div>
+
+        <div class="p-6">
+
+            {{-- Property Title --}}
+            <h3 class="text-xl font-bold mb-2 text-center">
+                {{ $property->title }}
+            </h3>
+
+            {{-- Location & Price --}}
+            <div class="flex justify-between text-sm text-gray-600 mb-4">
+                <p class="text-gray-500">
+                    <i class="fa-solid fa-location-dot mr-1"></i>
+                    {{ $property->location ?? $property->city }}
+                </p>
+                <p class="text-primary font-bold text-lg">
+                    Rs. {{ number_format($property->price) }}
+                </p>
             </div>
-        @endforeach
-    </div>
+
+            {{-- Property Stats --}}
+            <div class="flex gap-4 text-sm text-gray-600 mb-4">
+                <span>{{ $property->bedrooms ?? 0 }} <i class="fa-solid fa-bed ml-1"></i></span>
+                <span>{{ $property->bathrooms ?? 0 }} <i class="fa-solid fa-bath ml-1"></i></span>
+                <span>{{ $property->area ?? 0 }} <i class="fa-solid fa-chart-area ml-1"></i></span>
+            </div>
+
+            {{-- Agent Info --}}
+            @if($property->agent)
+                <div class="flex items-center gap-3 mt-4">
+                    <p class="text-sm text-gray-500"> Agent : </p>
+                    <p class="text-sm font-semibold">{{ $property->agent->name }}</p>
+
+                    </div>
+
+            @endif
+
+        </div>
+    </a>
+
+@empty
+    <p>No properties found.</p>
+@endforelse
+
+</div>
     <div class="text-center mt-6">
     <a href="/properties"
        class="inline-block bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition">

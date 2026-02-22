@@ -105,12 +105,39 @@
 
             <!-- YouTube Video -->
             @if($property->youtube_link)
-                <div class="mt-6">
-                    <iframe class="w-full h-64 md:h-96 rounded-lg"
-                        src="{{ \Str::replace('watch?v=', 'embed/', $property->youtube_link) }}"
-                        title="{{ $property->title }}" frameborder="0" allowfullscreen></iframe>
-                </div>
-            @endif
+    @php
+        // Helper to extract YouTube video ID from any URL format
+        function getYouTubeEmbedUrl($url) {
+            // Regex patterns for different YouTube URL formats
+            $patterns = [
+                '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/',
+                '/youtube\.com\/shorts\/([^"&?\/\s]{11})/',
+            ];
+
+            foreach ($patterns as $pattern) {
+                if (preg_match($pattern, $url, $match)) {
+                    return 'https://www.youtube.com/embed/' . $match[1];
+                }
+            }
+            return null; // Invalid URL
+        }
+        $embedUrl = getYouTubeEmbedUrl($property->youtube_link);
+    @endphp
+
+    @if($embedUrl)
+        <div class="mt-6">
+            <iframe class="w-full h-64 md:h-96 rounded-lg"
+                src="{{ $embedUrl }}"
+                title="{{ $property->title }}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    @else
+        <p class="text-red-500">Invalid YouTube link.</p>
+    @endif
+@endif
 
 
         </div>

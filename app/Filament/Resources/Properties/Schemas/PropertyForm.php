@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Properties\Schemas;
 
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -16,7 +17,7 @@ class PropertyForm
                 TextInput::make('title')
                     ->required(),
 
-                Textarea::make('description')
+                RichEditor::make('description')
                     ->columnSpanFull(),
 
                 TextInput::make('price')

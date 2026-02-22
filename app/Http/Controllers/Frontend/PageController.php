@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\Agent;
 use App\Models\GoogleReview;
 use App\Models\Property;
+use App\Models\PropertyInquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -80,24 +81,26 @@ class PageController extends Controller
     }
 
     public function contactAgent(Request $request, Agent $agent)
-    {
-        // Validate form
-        $data = $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'message' => 'required|string',
-            'first_time_buyer' => 'nullable|string|in:yes', // if checkbox
-        ]);
+{
+    $data = $request->validate([
+        'name'    => 'required|string|max:255',
+        'email'   => 'required|email|max:255',
+        'message' => 'required|string',
+        'property_id' => 'required|exists:properties,id', // you need to pass property_id from the form
+    ]);
 
-        // Example: send email to agent (optional)
-        // Mail::to($agent->email)->send(new ContactAgentMail($data));
+    // Store the inquiry
+    PropertyInquiry::create([
+        'property_id' => $data['property_id'],
+        'agent_id'    => $agent->id,
+        'name'        => $data['name'],
+        'email'       => $data['email'],
+        'message'     => $data['message'],
+        'is_read'     => false,
+    ]);
 
-        // Or simply save inquiry to database if you have inquiries table
-        // Example: AgentInquiry::create([...]);
-
-        // Flash success message
-        return back()->with('success', 'Message sent to agent successfully!');
-    }
+    return back()->with('success', 'Message sent to agent successfully!');
+}
 
     public function about()
     {

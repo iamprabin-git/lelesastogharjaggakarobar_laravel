@@ -1,0 +1,1 @@
+{{ $getLivewireKey() }}.panel

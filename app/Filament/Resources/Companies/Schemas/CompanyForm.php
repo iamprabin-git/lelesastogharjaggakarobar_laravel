@@ -30,8 +30,8 @@ class CompanyForm
                 ->label('Company Logo'),
 
             TextInput::make('facebook')->url(),
-            TextInput::make('viber')->url(),
-            TextInput::make('whatsapp')->url(),
+            TextInput::make('viber')->nullable(),
+            TextInput::make('whatsapp')->nullable(),
             TextInput::make('youtube')->url(),
             TextInput::make('instagram')->url(),
             TextInput::make('tiktok')->url(),
