@@ -19,6 +19,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+
 class PropertiesTable
 {
     public static function configure(Table $table): Table
@@ -36,6 +37,12 @@ class PropertiesTable
                     ->limit(50)
                     ->tooltip(fn ($state) => $state),
 
+
+                TextColumn::make('price')
+                    ->label('Price')
+                    ->money('NPR')
+                    ->sortable(),
+
                 TextColumn::make('agent.name')
                     ->label('Agent')
                     ->searchable(query: function (Builder $query, string $search) {
@@ -43,6 +50,7 @@ class PropertiesTable
                     })
                     ->sortable(),
 
+                // Use BadgeColumn for status with colors and icons
                 IconColumn::make('status')
                     ->label('Status')
                     ->colors([
@@ -57,10 +65,6 @@ class PropertiesTable
                     ])
                     ->sortable(),
 
-                TextColumn::make('price')
-                    ->label('Price')
-                    ->money('NPR')
-                    ->sortable(),
 
                 // Show rejection reason only when status is rejected
                 TextColumn::make('admin_notes')
@@ -110,9 +114,6 @@ class PropertiesTable
                             ->when($data['created_until'], fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
                     }),
             ])
-
-            // Default to showing only pending properties (admins can change filter)
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'pending'))
 
             // Row actions
             ->actions([

@@ -2,14 +2,14 @@
     $company = \App\Models\Company::where('status', true)->first();
 ?>
 
-<footer class="text-white mt-20"
+<footer class="text-white"
     style="background: linear-gradient(135deg, <?php echo e($company->primary_color ?? '#111827'); ?>, <?php echo e($company->secondary_color ?? '#1f2937'); ?>);">
 
     
-    <div class="container mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+    <div class="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
         
-        <div>
+        <div class="pt-10">
             <div class="flex items-center gap-3 mb-4">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($company?->logo): ?>
                     <img src="<?php echo e(asset('storage/' . $company->logo)); ?>"
@@ -72,7 +72,7 @@
         </div>
 
         
-        <div>
+        <div class="pt-10">
             <h3 class="text-xl font-semibold mb-6 border-b border-white pb-2">
                 About Company
             </h3>
@@ -87,7 +87,7 @@
         </div>
 
         
-        <div>
+        <div class="pt-10">
             <h3 class="text-xl font-semibold mb-6 border-b border-white pb-2">
                 Quick Links
             </h3>
@@ -104,7 +104,7 @@
         </div>
 
         
-        <div>
+        <div class="pt-10">
             <h3 class="text-xl font-semibold mb-6 border-b border-white pb-2">
                 Contact Us
             </h3>
@@ -133,7 +133,7 @@
 
     
     <div
-        class="container mx-auto px-4 py-28 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300 bg-gray-900 bg-opacity-50 rounded-t-lg">
+        class="container mx-auto py-3 px-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300 bg-gray-900 bg-opacity-50 rounded-t-lg">
 
         
         <div class="text-center md:text-left">

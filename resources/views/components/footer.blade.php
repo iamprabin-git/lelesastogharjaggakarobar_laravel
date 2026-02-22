@@ -2,14 +2,14 @@
     $company = \App\Models\Company::where('status', true)->first();
 @endphp
 
-<footer class="text-white mt-20"
+<footer class="text-white"
     style="background: linear-gradient(135deg, {{ $company->primary_color ?? '#111827' }}, {{ $company->secondary_color ?? '#1f2937' }});">
 
     {{-- Main Footer Content --}}
-    <div class="container mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+    <div class="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
         {{-- Column 1: Company Info --}}
-        <div>
+        <div class="pt-10">
             <div class="flex items-center gap-3 mb-4">
                 @if ($company?->logo)
                     <img src="{{ asset('storage/' . $company->logo) }}"
@@ -71,7 +71,7 @@
         </div>
 
         {{-- Column 2: Quick Links --}}
-        <div>
+        <div class="pt-10">
             <h3 class="text-xl font-semibold mb-6 border-b border-white pb-2">
                 About Company
             </h3>
@@ -86,7 +86,7 @@
         </div>
 
         {{-- Column 3: Property Types --}}
-        <div>
+        <div class="pt-10">
             <h3 class="text-xl font-semibold mb-6 border-b border-white pb-2">
                 Quick Links
             </h3>
@@ -103,7 +103,7 @@
         </div>
 
         {{-- Column 4: Contact + Newsletter --}}
-        <div>
+        <div class="pt-10">
             <h3 class="text-xl font-semibold mb-6 border-b border-white pb-2">
                 Contact Us
             </h3>
@@ -132,7 +132,7 @@
 
     {{-- Bottom Footer --}}
     <div
-        class="container mx-auto px-4 py-28 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300 bg-gray-900 bg-opacity-50 rounded-t-lg">
+        class="container mx-auto py-3 px-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300 bg-gray-900 bg-opacity-50 rounded-t-lg">
 
         {{-- Left Side --}}
         <div class="text-center md:text-left">

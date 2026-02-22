@@ -17,7 +17,7 @@
                 </p>
 
                 @if ($blog->image)
-                    <img src="{{ asset('storage/' . $blog->image) }}" class="w-full h-64 object-cover rounded-lg mb-6">
+                    <img src="{{ asset('storage/' . $blog->image) }}" class="w-full h-64 object-contain rounded-lg mb-6">
                 @endif
 
                 <div class="prose max-w-none text-gray-700">
@@ -86,32 +86,59 @@
 
         </div>
         <div class="container mx-auto max-w-6xl">
-                    <h3 class="text-2xl font-bold mb-2 pt-10">Related Blogs</h3>
+    <h3 class="text-2xl font-bold mb-2 pt-10">Related Blogs</h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        @foreach ($relatedBlogs ?? [] as $related)
-                            <div class="bg-white shadow rounded-lg overflow-hidden">
-                                @if ($related->image)
-                                    <img src="{{ asset('storage/' . $related->image) }}"
-                                        class="w-full h-45 object-cover">
-                                @endif
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        @foreach ($relatedBlogs ?? [] as $related)
+            <div class="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
+                {{-- Image with badge --}}
+                <div class="relative overflow-hidden h-48">
+                    @if ($related->image)
+                        <img src="{{ Storage::url($related->image) }}"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             alt="{{ $related->title }}">
+                    @else
+                        <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                            No image
+                        </div>
+                    @endif
 
-                                <div class="p-4">
-                                    <h4 class="font-semibold">
-                                        <a href="{{ route('blogs.show', $related->slug) }}"
-                                            class="hover:text-yellow-500">
-                                            {{ $related->title }}
-                                        </a>
-                                    </h4>
-
-                                    <p class="text-gray-500 text-sm mt-1">
-                                        {{ \Illuminate\Support\Str::limit($related->excerpt, 60) }}
-                                    </p>
-                                </div>
-                            </div>
-                        @endforeach
+                    {{-- Blog ID Badge --}}
+                    <div class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">
+                        ID: {{ $related->id }}
                     </div>
                 </div>
+
+                {{-- Content --}}
+                <div class="p-5">
+                    <h4 class="font-semibold text-lg mb-2">
+                        <a href="{{ route('blogs.show', $related->slug) }}"
+                           class="text-gray-800 hover:text-yellow-600 transition-colors">
+                            {{ $related->title }}
+                        </a>
+                    </h4>
+
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        {{ \Illuminate\Support\Str::limit($related->excerpt, 80) }}
+                    </p>
+
+                    <div class="mt-4 flex justify-between items-center">
+                        <span class="text-xs text-gray-400">
+                            {{ $related->created_at->format('M d, Y') }}
+                        </span>
+                        <a href="{{ route('blogs.show', $related->slug) }}"
+                           class="text-yellow-600 hover:text-yellow-700 text-sm font-medium inline-flex items-center gap-1">
+                            Read more
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
 
     </section>
 </x-frontend-layout>
