@@ -1,9 +1,9 @@
 @php
-$company = \App\Models\Company::where('status', true)->first();
+    $company = \App\Models\Company::where('status', true)->first();
 @endphp
 
 <footer class="text-white mt-20"
-        style="background: linear-gradient(135deg, {{ $company->primary_color ?? '#111827' }}, {{ $company->secondary_color ?? '#1f2937' }});">
+    style="background: linear-gradient(135deg, {{ $company->primary_color ?? '#111827' }}, {{ $company->secondary_color ?? '#1f2937' }});">
 
     {{-- Main Footer Content --}}
     <div class="container mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -11,9 +11,9 @@ $company = \App\Models\Company::where('status', true)->first();
         {{-- Column 1: Company Info --}}
         <div>
             <div class="flex items-center gap-3 mb-4">
-                @if($company?->logo)
+                @if ($company?->logo)
                     <img src="{{ asset('storage/' . $company->logo) }}"
-                         class="h-16 w-16 rounded-full object-cover border-2 border-white">
+                        class="h-16 w-16 rounded-full object-cover border-2 border-white">
                 @endif
                 <h2 class="text-2xl font-bold tracking-wide">
                     {{ $company->name ?? 'RealEstate' }}
@@ -21,48 +21,49 @@ $company = \App\Models\Company::where('status', true)->first();
             </div>
 
             <p class="text-gray-200 leading-relaxed text-sm">
-                We provide trusted real estate services including buying, selling, and renting properties with complete transparency and professionalism.
+                We provide trusted real estate services including buying, selling, and renting properties with complete
+                transparency and professionalism.
             </p>
 
             {{-- Social Icons --}}
             <div class="flex gap-4 mt-6 border rounded-lg p-1">
-                @if($company?->facebook)
+                @if ($company?->facebook)
                     <a href="{{ $company->facebook }}" target="_blank"
-                       class="bg-blue bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
+                        class="bg-blue bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
                         <i class="fab fa-facebook-f"></i>
                     </a>
                 @endif
 
-                @if($company?->instagram)
+                @if ($company?->instagram)
                     <a href="{{ $company->instagram }}" target="_blank"
-                       class="bg-red bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
+                        class="bg-red bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
                         <i class="fab fa-instagram"></i>
                     </a>
                 @endif
 
-                @if($company?->viber)
+                @if ($company?->viber)
                     <a href="{{ $company->viber }}" target="_blank"
-                       class="bg-white bg-opacity-20 p-2 rounded-full hover:bg-yellow-500 transition">
+                        class="bg-white bg-opacity-20 p-2 rounded-full hover:bg-yellow-500 transition">
                         <i class="fab fa-linkedin-in"></i>
                     </a>
                 @endif
 
-                @if($company?->youtube)
+                @if ($company?->youtube)
                     <a href="{{ $company->youtube }}" target="_blank"
-                       class="bg-red bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
+                        class="bg-red bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
                         <i class="fab fa-youtube"></i>
                     </a>
-                    @endif
+                @endif
 
-                @if($company?->tiktok)
-                 <a href="{{ $company->tiktok }}" target="_blank"
-                       class="bg-red bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
+                @if ($company?->tiktok)
+                    <a href="{{ $company->tiktok }}" target="_blank"
+                        class="bg-red bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
                         <i class="fab fa-tiktok"></i>
                     </a>
                 @endif
-                @if($company?->whatsapp)
-                 <a href="{{ $company->whatsapp }}" target="_blank"
-                       class="bg-red bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
+                @if ($company?->whatsapp)
+                    <a href="{{ $company->whatsapp }}" target="_blank"
+                        class="bg-red bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
                         <i class="fab fa-tiktok"></i>
                     </a>
                 @endif
@@ -108,29 +109,30 @@ $company = \App\Models\Company::where('status', true)->first();
             </h3>
 
             <ul class="space-y-3 text-gray-200 text-sm">
-                <li class="flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> {{ $company->address ?? 'Your Address Here' }}</li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-phone"></i> {{ $company->phone ?? '+977-9765726294' }} (What's App only)</li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-envelope"></i>{{ $company->email ?? 'info@realestate.com' }}</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-location-dot"></i>
+                    {{ $company->address ?? 'Your Address Here' }}</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-phone"></i>
+                    {{ $company->phone ?? '+977-9765726294' }} (What's App only)</li>
+                <li class="flex items-center gap-2"><i
+                        class="fa-solid fa-envelope"></i>{{ $company->email ?? 'info@realestate.com' }}</li>
             </ul>
 
             {{-- Newsletter --}}
-            <div class="mt-6">
-                <h4 class="font-semibold mb-3">Subscribe Newsletter</h4>
-                <form class="flex">
-                    <input type="email" placeholder="Your email"
-                           class="w-full px-3 py-2 rounded-l-md text-gray-800 focus:outline-none">
-                    <button type="submit"
-                            class="bg-yellow-500 px-4 rounded-r-md hover:bg-yellow-600 transition">
-                        ➤
-                    </button>
-                </form>
+            <div class="mt-6 border border-white rounded-2xl p-6">
+                <h4 class="font-semibold mb-3">Join Our WhatsApp Community</h4>
+                <a href="https://chat.whatsapp.com/YOUR_GROUP_INVITE_LINK" target="_blank" rel="noopener noreferrer"
+                    class="flex items-center justify-center w-full bg-green-500 hover:bg-green-800 text-white font-medium p-3 rounded-md transition duration-200">
+                    <i class="fab fa-whatsapp mr-2 text-xl"></i>
+                    Join WhatsApp Community
+                </a>
             </div>
         </div>
 
     </div>
 
     {{-- Bottom Footer --}}
-    <div class="container mx-auto px-4 py-18 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300 bg-gray-900 bg-opacity-50 rounded-t-lg">
+    <div
+        class="container mx-auto px-4 py-28 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300 bg-gray-900 bg-opacity-50 rounded-t-lg">
 
         {{-- Left Side --}}
         <div class="text-center md:text-left">

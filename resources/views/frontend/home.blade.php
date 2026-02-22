@@ -26,7 +26,7 @@
 @endphp
 
 @if($about)
-<section class="py-20 bg-gray-50">
+<section class="py-20 bg-gray-50 mt-10">
     <div class="container mx-auto px-6">
 
         <div class="grid md:grid-cols-2 gap-12 items-center">
