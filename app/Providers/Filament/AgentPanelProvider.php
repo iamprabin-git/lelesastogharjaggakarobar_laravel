@@ -22,6 +22,7 @@ class AgentPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+
         return $panel
             ->id('agent')
             ->path('agent')

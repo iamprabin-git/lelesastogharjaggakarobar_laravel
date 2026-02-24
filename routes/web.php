@@ -35,6 +35,7 @@ Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
 
 // Agent public registration
+// Agent Authentication Routes
 Route::get('/agent-form', [PageController::class, 'agent_form'])->name('agent.form');
 Route::post('/agent-store', [PageController::class, 'agent_store'])->name('agent.store');
 

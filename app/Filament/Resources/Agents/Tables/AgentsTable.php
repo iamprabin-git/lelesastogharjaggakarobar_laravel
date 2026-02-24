@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Agents\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,26 +16,17 @@ class AgentsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at', 'desc') // Corrected column
+            ->defaultSort('created_at', 'desc')
             ->columns([
-
                 ImageColumn::make('avatar')
                     ->disk('public')
                     ->url(fn($record) => $record->avatar ? asset('storage/' . $record->avatar) : null)
                     ->circular()
                     ->label('Photo'),
 
-                TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('phone')
-                    ->searchable(),
+                TextColumn::make('name')->searchable()->sortable(),
+                TextColumn::make('email')->searchable()->sortable(),
+                TextColumn::make('phone')->searchable(),
 
                 IconColumn::make('email_verified_at')
                     ->label('Verified')
@@ -45,9 +37,7 @@ class AgentsTable
                     ->date()
                     ->sortable()
                     ->color(fn ($record) =>
-                        $record->expiry_date && $record->expiry_date->isPast()
-                            ? 'danger'
-                            : 'success'
+                        $record->expiry_date && $record->expiry_date->isPast() ? 'danger' : 'success'
                     ),
 
                 TextColumn::make('status')
@@ -60,11 +50,17 @@ class AgentsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->recordActions([
                 EditAction::make(),
+                // ✅ Approve action
+                Action::make('approve')
+                    ->label('Approve')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn ($record) => !$record->status) // only if inactive
+                    ->action(fn ($record) => $record->update(['status' => true])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
