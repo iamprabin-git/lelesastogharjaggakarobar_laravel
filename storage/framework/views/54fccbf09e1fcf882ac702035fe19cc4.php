@@ -1,1 +1,0 @@
-{{ isset($this) ? <?php /**PATH G:\lelesastogharagga_laravel\realestate\storage\framework\views/040e7633ea7a2abe503fd832b914c616.blade.php ENDPATH**/ ?>
