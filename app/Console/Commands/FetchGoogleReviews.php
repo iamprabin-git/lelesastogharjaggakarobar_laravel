@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\GoogleReview;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
-use App\Models\GoogleReview;
 
 class FetchGoogleReviews extends Command
 {
@@ -27,20 +27,22 @@ class FetchGoogleReviews extends Command
             'https://maps.googleapis.com/maps/api/place/details/json',
             [
                 'place_id' => env('GOOGLE_PLACE_ID'),
-                'fields'   => 'rating,reviews',
-                'key'      => config('services.google_maps.key'),
+                'fields' => 'rating,reviews',
+                'key' => config('services.google_maps.key'),
             ]
         );
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             $this->error('Failed to connect to Google API.');
+
             return;
         }
 
         $data = $response->json();
 
-        if (!isset($data['result']['reviews'])) {
+        if (! isset($data['result']['reviews'])) {
             $this->error('No reviews found.');
+
             return;
         }
 
@@ -49,11 +51,11 @@ class FetchGoogleReviews extends Command
 
         foreach ($data['result']['reviews'] as $review) {
             GoogleReview::create([
-                'author_name'   => $review['author_name'],
+                'author_name' => $review['author_name'],
                 'profile_photo' => $review['profile_photo_url'] ?? null,
-                'rating'        => $review['rating'],
-                'text'          => $review['text'],
-                'review_time'   => now(),
+                'rating' => $review['rating'],
+                'text' => $review['text'],
+                'review_time' => now(),
             ]);
         }
 

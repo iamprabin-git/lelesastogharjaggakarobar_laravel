@@ -18,7 +18,7 @@ class PropertiesTable
                     ->searchable(),
 
                 TextColumn::make('price')
-                ->prefix('Rs')
+                    ->prefix('Rs')
                     ->sortable(),
                 TextColumn::make('type')
                     ->badge(),

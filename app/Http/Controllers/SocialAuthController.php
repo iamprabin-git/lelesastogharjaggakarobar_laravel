@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
-use Log;
 
 class SocialAuthController extends Controller
 {
@@ -23,13 +22,14 @@ class SocialAuthController extends Controller
 
             if ($user) {
                 Auth::login($user);
+
                 return redirect()->intended('/');
             }
 
             // Create new user
             $user = User::create([
-                'name'     => $googleUser->getName(),
-                'email'    => $googleUser->getEmail(),
+                'name' => $googleUser->getName(),
+                'email' => $googleUser->getEmail(),
                 'password' => Hash::make(uniqid()), // secure random password
                 // Optional fields
                 // 'google_id' => $googleUser->getId(),
@@ -44,7 +44,8 @@ class SocialAuthController extends Controller
             return redirect('/login')
                 ->with('error', 'Google login failed. Invalid session state. Please try again.');
         } catch (\Exception $e) {
-            \Log::error('Google login error: ' . $e->getMessage());
+            \Log::error('Google login error: '.$e->getMessage());
+
             return redirect('/login')
                 ->with('error', 'Unable to sign in with Google. Please try again later.');
         }

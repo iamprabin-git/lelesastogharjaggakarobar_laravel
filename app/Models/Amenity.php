@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Property;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -13,7 +12,7 @@ class Amenity extends Model
     public function properties(): BelongsToMany
     {
         return $this->belongsToMany(Property::class)
-                    ->withPivot('distance', 'unit')
-                    ->withTimestamps();
+            ->withPivot('distance', 'unit')
+            ->withTimestamps();
     }
 }

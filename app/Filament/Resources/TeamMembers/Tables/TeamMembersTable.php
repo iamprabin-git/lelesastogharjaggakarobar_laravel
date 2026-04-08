@@ -16,17 +16,17 @@ class TeamMembersTable
     {
         return $table
             ->columns([
-               TextColumn::make('name')->sortable()->searchable(),
+                TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('position')->sortable()->searchable(),
                 ImageColumn::make('photo')
                     ->disk('public')
-                    ->url(fn($record) => $record->photo ? asset('storage/' . $record->photo) : null)
+                    ->url(fn ($record) => $record->photo ? asset('storage/'.$record->photo) : null)
                     ->label('Photo'),
-                TextColumn::make('facebook')->url(fn($record) => $record->facebook)->openUrlInNewTab(),
-                TextColumn::make('instagram')->url(fn($record) => $record->instagram)->openUrlInNewTab(),
-                TextColumn::make('linkedin')->url(fn($record) => $record->linkedin)->openUrlInNewTab(),
-                TextColumn::make('email')->url(fn($record) => $record->email)->openUrlInNewTab(),
-                TextColumn::make('phone')->url(fn($record) => $record->phone)->openUrlInNewTab(),
+                TextColumn::make('facebook')->url(fn ($record) => $record->facebook)->openUrlInNewTab(),
+                TextColumn::make('instagram')->url(fn ($record) => $record->instagram)->openUrlInNewTab(),
+                TextColumn::make('linkedin')->url(fn ($record) => $record->linkedin)->openUrlInNewTab(),
+                TextColumn::make('email')->url(fn ($record) => $record->email)->openUrlInNewTab(),
+                TextColumn::make('phone')->url(fn ($record) => $record->phone)->openUrlInNewTab(),
                 ToggleColumn::make('is_active')->label('Active')->sortable()->alignCenter(),
             ])
             ->filters([

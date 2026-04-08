@@ -12,7 +12,8 @@ class CreateProperty extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['agent_id'] = Auth::user()->id;
+        $data['agent_id'] = Auth::guard('agent')->id();
+
         return $data;
     }
 }

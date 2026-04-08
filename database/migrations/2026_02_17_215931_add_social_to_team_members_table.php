@@ -9,22 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::table('team_members', function (Blueprint $table) {
-        $table->string('email')->nullable();
-        $table->string('phone')->nullable();
-        $table->string('instagram')->nullable();
-        $table->string('whatsapp')->nullable();
-        $table->string('tiktok')->nullable();
-    });
-}
+    public function up(): void
+    {
+        Schema::table('team_members', function (Blueprint $table) {
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('whatsapp')->nullable();
+            $table->string('tiktok')->nullable();
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('team_members', function (Blueprint $table) {
-        $table->dropColumn(['instagram', 'whatsapp', 'tiktok', 'email', 'phone']);
-    });
-}
-
+    public function down(): void
+    {
+        Schema::table('team_members', function (Blueprint $table) {
+            $table->dropColumn(['instagram', 'whatsapp', 'tiktok', 'email', 'phone']);
+        });
+    }
 };

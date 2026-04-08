@@ -2,8 +2,8 @@
 
 namespace App\View\Components;
 
-use Illuminate\View\Component;
 use App\Models\Advertisement as AdvertisementModel;
+use Illuminate\View\Component;
 
 class Advertisement extends Component
 {
@@ -12,11 +12,11 @@ class Advertisement extends Component
     public function __construct()
     {
         $this->advertisements = AdvertisementModel::where('is_active', true)
-    ->where(function ($query) {
-        $query->whereNull('expiry_date')
-              ->orWhere('expiry_date', '>=', now());
-    })
-    ->get();
+            ->where(function ($query) {
+                $query->whereNull('expiry_date')
+                    ->orWhere('expiry_date', '>=', now());
+            })
+            ->get();
     }
 
     public function render()

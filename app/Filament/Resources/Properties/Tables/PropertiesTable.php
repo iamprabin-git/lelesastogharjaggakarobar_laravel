@@ -37,7 +37,6 @@ class PropertiesTable
                     ->limit(50)
                     ->tooltip(fn ($state) => $state),
 
-
                 TextColumn::make('price')
                     ->label('Price')
                     ->money('NPR')
@@ -56,15 +55,14 @@ class PropertiesTable
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'approved',
-                        'danger'  => 'rejected',
+                        'danger' => 'rejected',
                     ])
                     ->icons([
-                        'heroicon-o-clock'          => 'pending',
-                        'heroicon-o-check-circle'   => 'approved',
-                        'heroicon-o-x-circle'       => 'rejected',
+                        'heroicon-o-clock' => 'pending',
+                        'heroicon-o-check-circle' => 'approved',
+                        'heroicon-o-x-circle' => 'rejected',
                     ])
                     ->sortable(),
-
 
                 // Show rejection reason only when status is rejected
                 TextColumn::make('admin_notes')
@@ -90,7 +88,7 @@ class PropertiesTable
                 SelectFilter::make('status')
                     ->label('Status')
                     ->options([
-                        'pending'  => 'Pending Approval',
+                        'pending' => 'Pending Approval',
                         'approved' => 'Approved',
                         'rejected' => 'Rejected',
                     ])
@@ -153,7 +151,7 @@ class PropertiesTable
                     ])
                     ->action(function (Property $record, array $data) {
                         $record->update([
-                            'status'      => 'rejected',
+                            'status' => 'rejected',
                             'admin_notes' => $data['rejection_reason'],
                         ]);
                         $record->agent->notify(new PropertyRejected($record, $data['rejection_reason']));
@@ -198,7 +196,7 @@ class PropertiesTable
                     ->action(function ($records, array $data) {
                         $records->each(function ($record) use ($data) {
                             $record->update([
-                                'status'      => 'rejected',
+                                'status' => 'rejected',
                                 'admin_notes' => $data['reason'],
                             ]);
                             $record->agent->notify(new PropertyRejected($record, $data['reason']));

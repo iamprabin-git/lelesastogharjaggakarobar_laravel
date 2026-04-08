@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Property extends Model
 {
@@ -39,19 +40,19 @@ class Property extends Model
     // Scope for approved properties
 
     public function scopeAvailable($query)
-{
-    return $query->where('availability', 'available');
-}
+    {
+        return $query->where('availability', 'available');
+    }
 
-public function scopeSold($query)
-{
-    return $query->where('availability', 'sold');
-}
+    public function scopeSold($query)
+    {
+        return $query->where('availability', 'sold');
+    }
 
-public function scopeRented($query)
-{
-    return $query->where('availability', 'rented');
-}
+    public function scopeRented($query)
+    {
+        return $query->where('availability', 'rented');
+    }
 
     public function scopeApproved($query)
     {
@@ -66,8 +67,18 @@ public function scopeRented($query)
     public function amenities(): BelongsToMany
     {
         return $this->belongsToMany(Amenity::class)
-                    ->withPivot('distance', 'unit')
-                    ->withTimestamps();
+            ->withPivot('distance', 'unit')
+            ->withTimestamps();
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(PropertyReview::class);
+    }
+
+    public function approvedReviews(): HasMany
+    {
+        return $this->reviews()->where('status', 'approved');
     }
 
     public function getFirstImageUrlAttribute()
@@ -75,5 +86,25 @@ public function scopeRented($query)
         return isset($this->images[0])
             ? asset('storage/'.$this->images[0])
             : asset('images/placeholder.png');
+    }
+
+    public static function youtubeEmbedUrl(?string $url): ?string
+    {
+        if (! $url) {
+            return null;
+        }
+
+        $patterns = [
+            '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/',
+            '/youtube\.com\/shorts\/([^"&?\/\s]{11})/',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $url, $match)) {
+                return 'https://www.youtube.com/embed/'.$match[1];
+            }
+        }
+
+        return null;
     }
 }

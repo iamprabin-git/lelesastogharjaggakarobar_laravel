@@ -18,7 +18,7 @@ class AboutSectionResource extends Resource
 {
     protected static ?string $model = AboutSection::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInformationCircle;
 
     protected static ?string $recordTitleAttribute = 'about';
 

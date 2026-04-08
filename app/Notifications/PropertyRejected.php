@@ -21,9 +21,9 @@ class PropertyRejected extends Notification
     {
         return [
             'property_id' => $this->property->id,
-            'title'       => $this->property->title,
-            'reason'      => $this->reason,
-            'message'     => 'Your property has been rejected.',
+            'title' => $this->property->title,
+            'reason' => $this->reason,
+            'message' => 'Your property has been rejected.',
         ];
     }
 }

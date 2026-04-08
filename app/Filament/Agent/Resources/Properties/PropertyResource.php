@@ -20,11 +20,11 @@ class PropertyResource extends Resource
 {
     protected static ?string $model = Property::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHomeModern;
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('agent_id', Auth::guard('agent')->user()->id);
+        return parent::getEloquentQuery()->where('agent_id', Auth::guard('agent')->id());
     }
 
     public static function form(Schema $schema): Schema

@@ -26,8 +26,7 @@ class Admin extends Authenticatable implements FilamentUser
     /**
      * Filament access check
      */
-
-public function canAccessPanel(Panel $panel): bool
+    public function canAccessPanel(Panel $panel): bool
     {
         // Allow all admins to access Filament panel
         // You can add custom logic here, e.g., check role or is_active

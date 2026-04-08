@@ -19,7 +19,7 @@ class PropertyResource extends Resource
 {
     protected static ?string $model = Property::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHomeModern;
 
     protected static ?string $recordTitleAttribute = 'title';
 
@@ -47,9 +47,9 @@ class PropertyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => ListProperties::route('/'),
+            'index' => ListProperties::route('/'),
             'create' => CreateProperty::route('/create'),
-            'edit'   => EditProperty::route('/{record}/edit'),
+            'edit' => EditProperty::route('/{record}/edit'),
         ];
     }
 }

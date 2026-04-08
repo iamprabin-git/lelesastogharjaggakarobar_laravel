@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\Agent;
 use App\Observers\AgentObserver;
-
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

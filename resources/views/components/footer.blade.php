@@ -64,7 +64,7 @@
                 @if ($company?->whatsapp)
                     <a href="{{ $company->whatsapp }}" target="_blank"
                         class="bg-red bg-opacity-50 p-2 rounded-full hover:bg-yellow-500 transition">
-                        <i class="fab fa-tiktok"></i>
+                        <i class="fab fa-whatsapp"></i>
                     </a>
                 @endif
             </div>

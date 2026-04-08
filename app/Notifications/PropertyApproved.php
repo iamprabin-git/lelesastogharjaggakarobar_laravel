@@ -21,8 +21,8 @@ class PropertyApproved extends Notification
     {
         return [
             'property_id' => $this->property->id,
-            'title'       => $this->property->title,
-            'message'     => 'Your property has been approved.',
+            'title' => $this->property->title,
+            'message' => 'Your property has been approved.',
         ];
     }
 

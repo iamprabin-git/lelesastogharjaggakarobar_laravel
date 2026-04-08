@@ -7,19 +7,18 @@ use App\Models\Payment;
 class AdminController extends Controller
 {
     public function index()
-{
-    $payments = Payment::latest()->get();
-    return view('admin.dashboard', compact('payments'));
-}
+    {
+        $payments = Payment::latest()->get();
 
-public function approve($id)
-{
-    $payment = Payment::findOrFail($id);
-    $payment->status = 'approved';
-    $payment->save();
+        return view('admin.dashboard', compact('payments'));
+    }
 
-    return back()->with('success', 'Payment Approved');
-}
+    public function approve($id)
+    {
+        $payment = Payment::findOrFail($id);
+        $payment->status = 'approved';
+        $payment->save();
 
-
+        return back()->with('success', 'Payment Approved');
+    }
 }

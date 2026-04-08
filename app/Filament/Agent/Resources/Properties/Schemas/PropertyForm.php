@@ -2,12 +2,10 @@
 
 namespace App\Filament\Agent\Resources\Properties\Schemas;
 
-use Dom\Text;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
@@ -74,19 +72,19 @@ class PropertyForm
                 //     ->disabled()
                 //     ->required(),
                 Repeater::make('Amenities')
-                ->columnSpanFull()
-                ->grid(2)
-                ->schema([
-                    TextInput::make('name')
-                        ->required(),
+                    ->columnSpanFull()
+                    ->grid(2)
+                    ->schema([
+                        TextInput::make('name')
+                            ->required(),
                         TextInput::make('distance')
-                        ->default(null),
-                    Select::make('unit')
-                        ->options(['km' => 'Kilometers', 'm' => 'Meters'])
-                        ->default('km')
-                        ->required(),
+                            ->default(null),
+                        Select::make('unit')
+                            ->options(['km' => 'Kilometers', 'm' => 'Meters'])
+                            ->default('km')
+                            ->required(),
 
-                ])
+                    ]),
             ]);
     }
 }

@@ -8,7 +8,6 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Hash;
 
 class AgentForm
 {
@@ -33,8 +32,7 @@ class AgentForm
 
                 TextInput::make('password')
                     ->password()
-                    ->required(fn ($record) => $record === null) // required only on create
-                    ->dehydrateStateUsing(fn ($state) => filled($state) ? Hash::make($state) : null)
+                    ->required(fn ($record) => $record === null)
                     ->dehydrated(fn ($state) => filled($state)),
 
                 FileUpload::make('avatar')
@@ -47,12 +45,18 @@ class AgentForm
                     ->nullable(),
 
                 Toggle::make('status')
-                    ->label('Active Status')
-                    ->default(1),
+                    ->label('Active (approved)')
+                    ->helperText('Turn on after you approve a frontend registration (or use Approve on the list). Active agents can open /agent/login and create property listings.')
+                    ->default(false),
 
                 DateTimePicker::make('email_verified_at')
                     ->label('Email Verified At')
                     ->nullable(),
+
+                TextInput::make('facebook')->url()->nullable()->maxLength(255),
+                TextInput::make('twitter')->url()->nullable()->maxLength(255),
+                TextInput::make('linkedin')->url()->nullable()->maxLength(255),
+                TextInput::make('instagram')->url()->nullable()->maxLength(255),
 
             ]);
     }

@@ -15,7 +15,7 @@
                         <td>
                             <h2 style="margin-top:0;">New Agent Registration Request</h2>
                             <p>Hello Admin,</p>
-                            <p>You have received a new agent registration request.</p>
+                            <p>You have received a new agent registration request. The list opens on <strong>Pending approval</strong> by default—use <strong>Approve &amp; activate</strong> or turn <strong>Active</strong> on in Edit so they can sign in at <code>/agent/login</code> and list properties.</p>
 
                             <hr style="border:none; border-top:1px solid #eee; margin:20px 0;">
 
@@ -24,9 +24,9 @@
                             <p><strong>Phone:</strong> {{ $data['phone'] }}</p>
 
                             <div style="text-align:center; margin:30px 0;">
-                                <a href="{{ url('/admin') }}"
+                                <a href="{{ url('/admin/agents') }}"
                                    style="background:#2563eb; color:#ffffff; padding:12px 25px; text-decoration:none; border-radius:5px; display:inline-block;">
-                                    View in Admin Panel
+                                    Open Agents in admin
                                 </a>
                             </div>
 

@@ -14,7 +14,7 @@ class TeamMemberForm
     {
         return $schema
             ->components([
-               TextInput::make('name')
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('position')

@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ContactController extends Controller
 {
     public function index()
     {
-        return view('contact');
+        return Inertia::render('Contact');
     }
 
     public function submit(Request $request)

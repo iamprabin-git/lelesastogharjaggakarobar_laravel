@@ -7,22 +7,38 @@
 
     <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        (function () {
+            try {
+                var k = 're_theme';
+                var t = localStorage.getItem(k);
+                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.bunny.net" />
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+
+    @vite(['resources/css/app.css', 'resources/js/legacy.ts'])
 </head>
-<body class="h-full bg-gray-50 dark:bg-gray-950 flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans antialiased">
+<body class="flex h-full items-center justify-center bg-background p-4 font-sans antialiased text-foreground sm:p-6 lg:p-8">
     <div class="w-full max-w-lg">
         <!-- Card -->
-        <div class="bg-white dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+        <div class="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl ring-1 ring-zinc-200/80 backdrop-blur-sm dark:ring-zinc-800">
             <!-- Header / Branding -->
-            <div class="px-8 pt-10 pb-6 text-center border-b border-gray-100 dark:border-gray-700/50">
+            <div class="border-b border-border px-8 pt-10 pb-6 text-center">
                 <a href="{{ url('/') }}">
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" class="mx-auto h-12 w-auto" />
                 </a>
-                <h1 class="mt-6 text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 class="mt-6 text-2xl font-bold tracking-tight text-foreground">
                     {{ $title ?? 'Welcome' }}
                 </h1>
                 @if(isset($subtitle))
-                    <p class="mt-2 text-gray-600 dark:text-gray-400">
+                    <p class="mt-2 text-muted-foreground">
                         {{ $subtitle }}
                     </p>
                 @endif
@@ -35,10 +51,10 @@
         </div>
 
         <!-- Footer links -->
-        <div class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+        <div class="mt-8 text-center text-sm text-muted-foreground">
             © {{ date('Y') }} {{ config('app.name') }} •
-            <a href="#" class="hover:text-indigo-600 dark:hover:text-indigo-400">Privacy</a> •
-            <a href="#" class="hover:text-indigo-600 dark:hover:text-indigo-400">Terms</a>
+            <a href="#" class="text-primary hover:underline">Privacy</a> •
+            <a href="#" class="text-primary hover:underline">Terms</a>
         </div>
     </div>
 </body>

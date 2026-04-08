@@ -15,7 +15,7 @@ class AboutSectionsTable
     {
         return $table
             ->columns([
-                 TextColumn::make('hero_title')->sortable()->searchable(),
+                TextColumn::make('hero_title')->sortable()->searchable(),
                 ImageColumn::make('hero_image'),
                 TextColumn::make('experience_years'),
                 TextColumn::make('properties_sold'),

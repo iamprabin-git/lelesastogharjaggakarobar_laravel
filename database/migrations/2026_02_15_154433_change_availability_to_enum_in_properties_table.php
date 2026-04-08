@@ -9,9 +9,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('properties', function (Blueprint $table) {
-           $table->enum('availability', ['available', 'rented', 'sold'])
-                  ->default('available')
-                  ->after('status');
+            $table->enum('availability', ['available', 'rented', 'sold'])
+                ->default('available')
+                ->after('status');
         });
     }
 

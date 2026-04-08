@@ -15,10 +15,11 @@
 </div>
 
 <p>
-    <a href="{{ url('/login') }}" target="_blank"
+    <a href="{{ url('/agent/login') }}" target="_blank"
        style="background:#2563eb; color:#fff; padding:10px 20px; text-decoration:none; border-radius:5px;">
-       Login Now
+       Open agent dashboard
     </a>
-</p><p>Thank you for being a part of our community!</p>
+</p>
+<p>Thank you for being a part of our community!</p>
 </body>
 </html>

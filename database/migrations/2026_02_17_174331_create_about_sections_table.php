@@ -13,20 +13,20 @@ return new class extends Migration
     {
         Schema::create('about_sections', function (Blueprint $table) {
             $table->id();
-        $table->string('hero_title');
-        $table->text('hero_description');
-        $table->string('hero_image');
+            $table->string('hero_title');
+            $table->text('hero_description');
+            $table->string('hero_image');
 
-        $table->string('about_image');
-        $table->string('experience_years');
+            $table->string('about_image');
+            $table->string('experience_years');
 
-        $table->integer('properties_sold');
-        $table->integer('happy_clients');
+            $table->integer('properties_sold');
+            $table->integer('happy_clients');
 
-        $table->text('mission');
-        $table->text('vision');
+            $table->text('mission');
+            $table->text('vision');
 
-        $table->timestamps();
+            $table->timestamps();
         });
     }
 

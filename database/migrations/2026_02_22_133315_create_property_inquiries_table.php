@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('property_inquiries', function (Blueprint $table) {
-           $table->id();
-        $table->foreignId('property_id')->constrained()->onDelete('cascade');
-        $table->foreignId('agent_id')->constrained()->onDelete('cascade'); // optional denormalization
-        $table->string('name');
-        $table->string('email');
-        $table->text('message');
-        $table->boolean('is_read')->default(false);
-        $table->timestamps();
+            $table->id();
+            $table->foreignId('property_id')->constrained()->onDelete('cascade');
+            $table->foreignId('agent_id')->constrained()->onDelete('cascade'); // optional denormalization
+            $table->string('name');
+            $table->string('email');
+            $table->text('message');
+            $table->boolean('is_read')->default(false);
+            $table->timestamps();
         });
     }
 

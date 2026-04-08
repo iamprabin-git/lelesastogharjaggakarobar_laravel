@@ -6,62 +6,27 @@ use App\Mail\AgentApprove;
 use App\Models\Agent;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AgentObserver
 {
-    /**
-     * Handle the Agent "created" event.
-     */
-    public function created(Agent $agent): void
-    {
-        //
-    }
-
-    /**
-     * Handle the Agent "updated" event.
-     */
     public function updated(Agent $agent): void
     {
-        if ($agent->isDirty('status') && $agent->status == 1) {
-            // Only generate temp password if agent has no password
-            if (!$agent->password) {
-                $password = rand(100000, 999999);
-                $agent->password = Hash::make($password);
-                $agent->saveQuietly();
-
-                $data = [
-                    'email' => $agent->email,
-                    'name' => $agent->name,
-                    'password' => $password,
-
-                ];
-
-                Mail::to($agent->email)->send(new AgentApprove($data));
-            }
+        if (! $agent->wasChanged('status') || ! $agent->isActive()) {
+            return;
         }
-    }
 
-    /**
-     * Handle the Agent "deleted" event.
-     */
-    public function deleted(Agent $agent): void
-    {
-        //
-    }
+        if (filled($agent->getOriginal('password'))) {
+            return;
+        }
 
-    /**
-     * Handle the Agent "restored" event.
-     */
-    public function restored(Agent $agent): void
-    {
-        //
-    }
+        $plainPassword = Str::password(12);
+        $agent->forceFill(['password' => Hash::make($plainPassword)]);
+        $agent->saveQuietly();
 
-    /**
-     * Handle the Agent "force deleted" event.
-     */
-    public function forceDeleted(Agent $agent): void
-    {
-        //
+        Mail::to($agent->email)->send(new AgentApprove([
+            'name' => $agent->name,
+            'password' => $plainPassword,
+        ]));
     }
 }

@@ -6,7 +6,10 @@ use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\FaqController;
 use App\Http\Controllers\Frontend\PageController;
+use App\Http\Controllers\Frontend\PricingController;
 use App\Http\Controllers\Frontend\PropertyController;
+use App\Http\Controllers\Frontend\QrController;
+use App\Http\Controllers\Frontend\StaticLegalController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialAuthController;
@@ -19,16 +22,19 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 // Properties (public)
 Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
 Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
+Route::post('/properties/{property}/reviews', [PropertyController::class, 'storeReview'])
+    ->middleware('auth')
+    ->name('properties.reviews.store');
 
 // Static pages
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 Route::get('/faqs', [FaqController::class, 'index'])->name('faqs');
-Route::view('/privacy-policy', 'frontend.privacy_policy')->name('privacy.policy');
-Route::view('/terms', 'frontend.terms')->name('terms');
-Route::view('/pricing', 'frontend.pricing')->name('pricing');
-Route::view('/qr', 'frontend.qr')->name('qr');
+Route::get('/privacy-policy', [StaticLegalController::class, 'privacy'])->name('privacy.policy');
+Route::get('/terms', [StaticLegalController::class, 'terms'])->name('terms');
+Route::get('/pricing', PricingController::class)->name('pricing');
+Route::get('/qr', QrController::class)->name('qr');
 
 // Blogs (public)
 Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');

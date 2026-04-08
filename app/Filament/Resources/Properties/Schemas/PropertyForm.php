@@ -4,8 +4,8 @@ namespace App\Filament\Resources\Properties\Schemas;
 
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PropertyForm
@@ -36,7 +36,7 @@ class PropertyForm
                 // Admin can manually change status, but usually done via table actions
                 Select::make('status')
                     ->options([
-                        'pending'  => 'Pending',
+                        'pending' => 'Pending',
                         'approved' => 'Approved',
                         'rejected' => 'Rejected',
                     ])
@@ -53,8 +53,8 @@ class PropertyForm
                 Select::make('availability')
                     ->options([
                         'available' => 'Available',
-                        'rented'    => 'Rented',
-                        'sold'      => 'Sold',
+                        'rented' => 'Rented',
+                        'sold' => 'Sold',
                     ])
                     ->default('available')
                     ->required(),

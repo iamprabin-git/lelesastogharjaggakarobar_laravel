@@ -16,6 +16,8 @@ class PropertyInquiry extends Model
         'email',
         'message',
         'is_read',
+        'crm_status',
+        'admin_notes',
     ];
 
     protected $casts = [

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Property;
 use App\Models\Amenity;
+use App\Models\Property;
+use App\Models\PropertyReview;
+use App\Support\InertiaSerializers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class PropertyController extends Controller
 {
@@ -17,9 +20,9 @@ class PropertyController extends Controller
 
         if ($request->filled('keyword')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->keyword . '%')
-                  ->orWhere('location', 'like', '%' . $request->keyword . '%')
-                  ->orWhere('city', 'like', '%' . $request->keyword . '%');
+                $q->where('title', 'like', '%'.$request->keyword.'%')
+                    ->orWhere('location', 'like', '%'.$request->keyword.'%')
+                    ->orWhere('city', 'like', '%'.$request->keyword.'%');
             });
         }
 
@@ -57,9 +60,23 @@ class PropertyController extends Controller
             $query->latest();
         }
 
-        $latestProperties = $query->paginate(9)->withQueryString();
+        $latestProperties = $query->with('agent')->paginate(9)->withQueryString();
+        $latestProperties->getCollection()->transform(function (Property $p) {
+            return InertiaSerializers::propertyCard($p);
+        });
 
-        return view('frontend.properties.index', compact('latestProperties'));
+        return Inertia::render('Properties/Index', [
+            'latestProperties' => $latestProperties,
+            'filters' => [
+                'keyword' => $request->input('keyword', ''),
+                'city' => $request->input('city', ''),
+                'type' => $request->input('type', ''),
+                'bedrooms' => $request->input('bedrooms', ''),
+                'min_price' => $request->input('min_price', ''),
+                'max_price' => $request->input('max_price', ''),
+                'sort' => $request->input('sort', ''),
+            ],
+        ]);
     }
 
     public function show(Property $property)
@@ -71,20 +88,79 @@ class PropertyController extends Controller
 
         $property->load(['agent', 'amenities']);
 
+        $approvedReviews = $property->approvedReviews()->with('user')->latest()->get();
+        $reviewAverage = $approvedReviews->avg('rating') ?? 0;
+        $reviewCount = $approvedReviews->count();
+
         $relatedProperties = Property::approved()
             ->available()
+            ->with('agent')
             ->where('city', $property->city)
             ->where('id', '!=', $property->id)
             ->latest()
             ->limit(6)
             ->get();
 
-        return view('frontend.properties.show', compact('property', 'relatedProperties'));
+        $userReview = auth()->check()
+            ? PropertyReview::where('property_id', $property->id)->where('user_id', auth()->id())->first()
+            : null;
+
+        return Inertia::render('Properties/Show', [
+            'property' => InertiaSerializers::propertyDetail($property),
+            'relatedProperties' => $relatedProperties
+                ->map(fn (Property $p) => InertiaSerializers::propertyCard($p->loadMissing('agent')))
+                ->values()
+                ->all(),
+            'approvedReviews' => $approvedReviews
+                ->map(fn (PropertyReview $r) => [
+                    'id' => $r->id,
+                    'rating' => $r->rating,
+                    'comment' => $r->comment,
+                    'created_at' => $r->created_at->toIso8601String(),
+                    'user_name' => $r->user->name ?? 'User',
+                ])
+                ->values()
+                ->all(),
+            'reviewAverage' => round((float) $reviewAverage, 1),
+            'reviewCount' => $reviewCount,
+            'userReview' => $userReview ? ['status' => $userReview->status] : null,
+        ]);
+    }
+
+    public function storeReview(Request $request, Property $property)
+    {
+        if ($property->status !== 'approved' || $property->availability !== 'available') {
+            abort(404);
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|min:10|max:2000',
+        ]);
+
+        $exists = PropertyReview::where('property_id', $property->id)
+            ->where('user_id', $request->user()->id)
+            ->exists();
+
+        if ($exists) {
+            return back()->with('error', 'You have already submitted a review for this property.');
+        }
+
+        PropertyReview::create([
+            'property_id' => $property->id,
+            'user_id' => $request->user()->id,
+            'rating' => (int) $request->rating,
+            'comment' => $request->comment,
+            'status' => 'pending',
+        ]);
+
+        return back()->with('success', 'Thank you. Your review will be published after an administrator approves it.');
     }
 
     public function edit(Property $property)
     {
         $allAmenities = Amenity::all();
+
         return view('frontend.properties.edit', compact('property', 'allAmenities'));
     }
 

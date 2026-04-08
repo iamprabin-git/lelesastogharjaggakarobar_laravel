@@ -2,23 +2,29 @@
 
 namespace App\Models;
 
-use App\Models\Property;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 class Agent extends Authenticatable implements FilamentUser
 {
+    use HasFactory;
     use Notifiable;
-    // Add ALL fields that will be updated via forms or Filament
+
     protected $fillable = [
         'name',
         'email',
         'phone',
-        'avatar',   // for uploaded image
-        'status',   // for toggle Active/Inactive
+        'avatar',
+        'facebook',
+        'twitter',
+        'linkedin',
+        'instagram',
+        'status',
         'expiry_date',
         'password',
         'email_verified_at',
@@ -30,9 +36,48 @@ class Agent extends Authenticatable implements FilamentUser
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Whether the agent is allowed to operate (admin-approved).
+     */
+    public function isActive(): bool
+    {
+        $status = $this->status;
+
+        if ($status === true || $status === 1 || $status === '1') {
+            return true;
+        }
+
+        if ($status === false || $status === 0 || $status === '0' || $status === null) {
+            return false;
+        }
+
+        return filter_var($status, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    /**
+     * Expiry is inclusive for the calendar day stored in expiry_date.
+     */
+    public function isAccessExpired(): bool
+    {
+        if ($this->expiry_date === null) {
+            return false;
+        }
+
+        $expiry = $this->expiry_date instanceof Carbon
+            ? $this->expiry_date->copy()->startOfDay()
+            : Carbon::parse($this->expiry_date)->startOfDay();
+
+        return now()->startOfDay()->gt($expiry);
+    }
+
+    public function canAccessAgentPanel(): bool
+    {
+        return $this->isActive() && ! $this->isAccessExpired();
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return $panel->getId() === 'agent' && $this->canAccessAgentPanel();
     }
 
     public function properties(): HasMany

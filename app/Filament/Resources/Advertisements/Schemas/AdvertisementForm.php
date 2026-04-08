@@ -15,25 +15,25 @@ class AdvertisementForm
         return $schema
             ->components([
                 TextInput::make('title')
-                ->required()
-                ->maxLength(255),
+                    ->required()
+                    ->maxLength(255),
 
-            TextInput::make('link')
-                ->url()
-                ->maxLength(255),
+                TextInput::make('link')
+                    ->url()
+                    ->maxLength(255),
 
-            FileUpload::make('image')
-                ->image()
-                ->directory('advertisements')
-                ->required(),
+                FileUpload::make('image')
+                    ->image()
+                    ->directory('advertisements')
+                    ->required(),
 
-            DatePicker::make('expiry_date')
-                ->label('Expiry Date')
-                ->minDate(now()),
+                DatePicker::make('expiry_date')
+                    ->label('Expiry Date')
+                    ->minDate(now()),
 
-            Toggle::make('is_active')
-                ->label('Active')
-                ->default(true),
+                Toggle::make('is_active')
+                    ->label('Active')
+                    ->default(true),
             ]);
     }
 }

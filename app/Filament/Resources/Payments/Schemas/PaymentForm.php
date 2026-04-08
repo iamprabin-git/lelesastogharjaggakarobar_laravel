@@ -12,12 +12,12 @@ class PaymentForm
         return $schema
             ->components([
                 Select::make('status')
-    ->options([
-        'pending' => 'Pending',
-        'approved' => 'Approved',
-        'rejected' => 'Rejected',
-    ])
-    ->required(),
+                    ->options([
+                        'pending' => 'Pending',
+                        'approved' => 'Approved',
+                        'rejected' => 'Rejected',
+                    ])
+                    ->required(),
             ]);
     }
 }

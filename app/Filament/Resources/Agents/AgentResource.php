@@ -18,18 +18,29 @@ class AgentResource extends Resource
 {
     protected static ?string $model = Agent::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-     protected static ?string $navigationLabel = 'Agents';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
+
+    protected static ?string $navigationLabel = 'Agents';
+
     protected static ?string $slug = 'agents';
 
-    protected static ?string $recordTitleAttribute = 'name'; // Column to display as title
+    protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $pending = static::getModel()::query()->where('status', false)->count();
 
-    // protected static ?string $recordTitleAttribute = 'agentResource';
+        return $pending > 0 ? (string) $pending : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
 
     public static function canCreate(): bool
     {
-        return false;
+        return true;
     }
 
     public static function form(Schema $schema): Schema

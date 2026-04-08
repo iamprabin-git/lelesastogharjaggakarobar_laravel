@@ -14,7 +14,7 @@ class AboutSectionForm
     {
         return $schema
             ->components([
-               TextInput::make('hero_title')
+                TextInput::make('hero_title')
                     ->required()
                     ->maxLength(255),
 

@@ -35,11 +35,11 @@ return [
         ],
     ],
     'google_maps' => [
-    'key' => env('GOOGLE_MAPS_API_KEY'),
-],
+        'key' => env('GOOGLE_MAPS_API_KEY'),
+    ],
     'google_places' => [
-    'place_id' => env('GOOGLE_PLACE_ID'),
-],
+        'place_id' => env('GOOGLE_PLACE_ID'),
+    ],
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),

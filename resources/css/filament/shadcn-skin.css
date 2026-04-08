@@ -1,0 +1,238 @@
+/**
+ * Shadcn-style UI skin for Filament (visual only — Filament stays Livewire/Blade).
+ * Matches the public site’s zinc/orange language and shadcn-like density.
+ */
+
+@layer base {
+    html.fi {
+        --radius: 0.625rem;
+    }
+}
+
+@layer components {
+    /* App shell */
+    html.fi .fi-body {
+        @apply bg-zinc-50 dark:bg-zinc-950;
+    }
+
+    /* Top bar: shadcn “sticky header” feel */
+    html.fi .fi-topbar {
+        @apply border-b border-zinc-200/70 bg-white/90 shadow-none ring-0 backdrop-blur-md dark:border-zinc-800/70 dark:bg-zinc-950/90;
+    }
+
+    /*
+     * Sidebar — professional light / dark
+     * Light: white rail, zinc borders, primary-tinted active item.
+     * Dark: zinc-950 rail, soft hovers, readable labels.
+     */
+    html.fi .fi-sidebar.fi-main-sidebar {
+        @apply bg-white dark:bg-zinc-950;
+    }
+
+    @media (width >= 1024px) {
+        html.fi .fi-sidebar.fi-sidebar-open {
+            @apply border-e border-zinc-200/90 bg-white shadow-none ring-0 dark:border-zinc-800 dark:bg-zinc-950;
+        }
+    }
+
+    @media (width < 1024px) {
+        html.fi .fi-sidebar.fi-sidebar-open {
+            @apply border-e border-zinc-200/80 shadow-2xl ring-1 ring-black/5 dark:border-zinc-800 dark:ring-white/10;
+        }
+    }
+
+    html.fi .fi-sidebar-header-ctn {
+        @apply shrink-0 border-b border-zinc-100 bg-white/95 dark:border-zinc-800/80 dark:bg-zinc-950/95;
+    }
+
+    html.fi .fi-body-has-topbar .fi-sidebar-header {
+        @apply bg-white dark:bg-zinc-950;
+    }
+
+    html.fi .fi-sidebar-nav {
+        @apply gap-y-1 px-3 py-6 sm:px-4;
+        scrollbar-width: thin;
+        scrollbar-color: rgb(161 161 170 / 0.45) transparent;
+    }
+
+    html.fi.dark .fi-sidebar-nav {
+        scrollbar-color: rgb(82 82 91 / 0.55) transparent;
+    }
+
+    html.fi .fi-sidebar-nav::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    html.fi .fi-sidebar-nav::-webkit-scrollbar-thumb {
+        border-radius: 9999px;
+        background-color: rgb(161 161 170 / 0.45);
+    }
+
+    html.fi.dark .fi-sidebar-nav::-webkit-scrollbar-thumb {
+        background-color: rgb(82 82 91 / 0.55);
+    }
+
+    html.fi .fi-sidebar-nav-groups {
+        @apply gap-y-6;
+    }
+
+    html.fi .fi-sidebar-group-label {
+        @apply px-2 text-[0.6875rem] font-semibold uppercase tracking-[0.06em] text-zinc-400 dark:text-zinc-500;
+    }
+
+    html.fi .fi-sidebar-group-btn {
+        @apply rounded-lg;
+    }
+
+    html.fi .fi-sidebar-group-dropdown-trigger-btn {
+        @apply mx-0.5 rounded-lg px-2 py-2 text-zinc-600 transition-colors duration-150 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800/80 dark:hover:text-zinc-100;
+    }
+
+    html.fi .fi-sidebar-group.fi-active .fi-sidebar-group-dropdown-trigger-btn .fi-icon {
+        @apply text-primary-600 dark:text-primary-400;
+    }
+
+    html.fi .fi-sidebar-item-btn {
+        @apply mx-0.5 rounded-lg px-3 py-2.5 text-zinc-700 transition-colors duration-150 dark:text-zinc-200;
+    }
+
+    html.fi .fi-sidebar-item-btn > .fi-icon {
+        @apply text-zinc-500 dark:text-zinc-400;
+    }
+
+    html.fi .fi-sidebar-item-label {
+        @apply font-medium text-zinc-700 dark:text-zinc-200;
+    }
+
+    html.fi .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover {
+        @apply bg-zinc-100 dark:bg-zinc-800/70;
+    }
+
+    html.fi .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover > .fi-icon {
+        @apply text-zinc-700 dark:text-zinc-300;
+    }
+
+    html.fi .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+        @apply bg-primary-600/[0.09] font-semibold text-primary-800 shadow-xs ring-1 ring-primary-600/15 dark:bg-primary-400/[0.12] dark:text-primary-200 dark:ring-primary-400/25;
+    }
+
+    html.fi .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+        @apply text-primary-600 dark:text-primary-400;
+    }
+
+    html.fi .fi-sidebar-item.fi-active .fi-sidebar-item-label {
+        @apply text-primary-800 dark:text-primary-200;
+    }
+
+    html.fi .fi-sidebar-item-grouped-border-part-not-first,
+    html.fi .fi-sidebar-item-grouped-border-part-not-last {
+        @apply bg-zinc-200 dark:bg-zinc-700;
+    }
+
+    html.fi .fi-sidebar-item-grouped-border-part {
+        @apply bg-zinc-400 dark:bg-zinc-500;
+    }
+
+    html.fi .fi-sidebar-item.fi-active .fi-sidebar-item-grouped-border-part {
+        @apply bg-primary-600 dark:bg-primary-400;
+    }
+
+    html.fi .fi-sidebar-database-notifications-btn {
+        @apply mx-0.5 rounded-lg px-3 py-2.5 transition-colors duration-150 hover:bg-zinc-100 dark:hover:bg-zinc-800/70;
+    }
+
+    html.fi .fi-sidebar-database-notifications-btn > .fi-icon {
+        @apply text-zinc-500 dark:text-zinc-400;
+    }
+
+    html.fi .fi-sidebar-database-notifications-btn-label {
+        @apply font-medium text-zinc-700 dark:text-zinc-200;
+    }
+
+    /* Controls: shadcn default rounding */
+    html.fi .fi-btn {
+        @apply rounded-md;
+    }
+
+    html.fi .fi-input-wrp {
+        @apply rounded-md shadow-xs ring-zinc-200/80 dark:ring-zinc-700;
+    }
+
+    /* Cards: sections & tables */
+    html.fi .fi-section:not(.fi-section-not-contained):not(.fi-aside),
+    html.fi .fi-ta-ctn {
+        @apply shadow-xs ring-zinc-200/80 dark:ring-zinc-800;
+    }
+
+    html.fi .fi-section.fi-aside > .fi-section-content-ctn {
+        @apply ring-zinc-200/80 dark:ring-zinc-800;
+    }
+
+    /* ---------- Page header & dashboard ---------- */
+    html.fi .fi-page-header-main-ctn {
+        @apply gap-y-6 pt-6 pb-2 sm:pt-8;
+    }
+
+    html.fi .fi-header {
+        @apply gap-4 border-b border-zinc-100 pb-8 dark:border-zinc-800/80;
+    }
+
+    html.fi .fi-header-heading {
+        @apply text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-50;
+    }
+
+    html.fi .fi-header-subheading {
+        @apply mt-2 max-w-3xl text-base font-normal leading-relaxed text-zinc-600 dark:text-zinc-400;
+    }
+
+    html.fi .fi-breadcrumbs ol li {
+        @apply text-[11px] font-semibold uppercase tracking-[0.06em] text-zinc-400 dark:text-zinc-500;
+    }
+
+    html.fi .fi-breadcrumbs ol li a:hover {
+        @apply text-zinc-700 dark:text-zinc-200;
+    }
+
+    html.fi .fi-page-content {
+        @apply gap-y-8 pt-2;
+    }
+
+    html.fi .fi-wi {
+        @apply gap-6 lg:gap-8;
+    }
+
+    html.fi .fi-wi-widget {
+        @apply min-w-0;
+    }
+
+    /* KPI / stats cards */
+    html.fi .fi-wi-stats-overview-stat {
+        @apply rounded-2xl border-0 bg-white p-6 shadow-sm ring-1 ring-zinc-200/80 transition-shadow duration-200 sm:p-7 dark:bg-zinc-900 dark:ring-zinc-800;
+    }
+
+    html.fi .fi-wi-stats-overview-stat:hover {
+        @apply shadow-md ring-zinc-300/90 dark:ring-zinc-700;
+    }
+
+    html.fi .fi-wi-stats-overview-stat-label {
+        @apply text-[11px] font-semibold uppercase tracking-[0.05em] text-zinc-500 dark:text-zinc-400;
+    }
+
+    html.fi .fi-wi-stats-overview-stat-value {
+        @apply text-3xl font-semibold tracking-tight text-zinc-950 tabular-nums sm:text-4xl dark:text-white;
+    }
+
+    html.fi .fi-wi-stats-overview-stat-description {
+        @apply mt-0.5 text-sm font-medium;
+    }
+
+    /* Stats overview widget shell */
+    html.fi .fi-wi-stats-overview {
+        @apply w-full;
+    }
+
+    /* Modal / slide-over windows */
+    html.fi .fi-modal-window {
+        @apply rounded-xl ring-zinc-200/80 shadow-lg dark:ring-zinc-800;
+    }
+}

@@ -47,7 +47,7 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
-        'agent' => ['driver' => 'session', 'provider' => 'agents',],
+        'agent' => ['driver' => 'session', 'provider' => 'agents'],
     ],
 
     /*
@@ -76,7 +76,7 @@ return [
             'driver' => 'eloquent',
             'model' => Admin::class,
         ],
-        'agents' => ['driver' => 'eloquent', 'model' => Agent::class,],
+        'agents' => ['driver' => 'eloquent', 'model' => Agent::class],
 
         // 'users' => [
         //     'driver' => 'database',
