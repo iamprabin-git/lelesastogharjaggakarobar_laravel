@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from '@inertiajs/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -35,6 +35,35 @@ type About = {
 
 type Ad = { id: number; title: string | null; link: string | null; image: string | null };
 
+function chunkAds<T>(items: T[], size: number): T[][] {
+    const slides: T[][] = [];
+    for (let i = 0; i < items.length; i += size) {
+        slides.push(items.slice(i, i + size));
+    }
+    return slides;
+}
+
+function AdvertisementCard({ ad }: { ad: Ad }) {
+    const inner =
+        ad.image ? (
+            <img src={ad.image} alt={ad.title ?? 'Advertisement'} className="h-64 w-full object-contain md:h-80 lg:h-96" />
+        ) : (
+            <div className="bg-muted flex h-64 items-center justify-center md:h-80 lg:h-96">Ad</div>
+        );
+
+    return (
+        <div className="relative overflow-hidden rounded-xl shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+            {ad.link ? (
+                <a href={ad.link} target="_blank" rel="noreferrer" className="block h-full w-full">
+                    {inner}
+                </a>
+            ) : (
+                inner
+            )}
+        </div>
+    );
+}
+
 export default function Home({
     latestProperties,
     reviews,
@@ -52,6 +81,8 @@ export default function Home({
 }) {
     const [type, setType] = useState(ALL);
     const [sort, setSort] = useState(ALL);
+
+    const advertisementSlides = useMemo(() => chunkAds(advertisements, 2), [advertisements]);
 
     return (
         <SiteLayout title="Home">
@@ -113,7 +144,7 @@ export default function Home({
                     <div className="container mx-auto grid items-center gap-10 px-4 md:grid-cols-2">
                         {about.about_image && (
                             <div className="relative">
-                                <img src={about.about_image} alt="" className="h-80 w-full rounded-3xl object-cover shadow-xl md:h-[28rem]" />
+                                <img src={about.about_image} alt="" className="h-80 w-full rounded-3xl object-cover shadow-xl md:h-112" />
                                 <div className="bg-primary text-primary-foreground absolute -bottom-4 -right-4 rounded-2xl px-5 py-3 shadow-lg">
                                     <p className="text-2xl font-bold">{about.experience_years}+</p>
                                     <p className="text-xs">Years experience</p>
@@ -186,21 +217,31 @@ export default function Home({
                 <section className="container mx-auto py-16 px-4">
                     <h2 className="mb-2 text-center text-2xl font-bold">Advertisements</h2>
                     <p className="text-muted-foreground mb-8 text-center text-sm">Sponsored promotions</p>
-                    <Swiper modules={[Navigation, Pagination]} navigation pagination={{ clickable: true }} className="pb-10">
-                        {advertisements.map((ad) => (
-                            <SwiperSlide key={ad.id}>
-                                <div className="px-2">
-                                    {ad.link ? (
-                                        <a href={ad.link} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-xl border shadow-sm">
-                                            {ad.image ? (
-                                                <img src={ad.image} alt={ad.title ?? ''} className="h-72 w-full object-cover md:h-96" />
-                                            ) : (
-                                                <div className="bg-muted flex h-72 items-center justify-center">Ad</div>
-                                            )}
-                                        </a>
-                                    ) : ad.image ? (
-                                        <img src={ad.image} alt="" className="h-72 w-full rounded-xl object-cover md:h-96" />
-                                    ) : null}
+                    <Swiper
+                        modules={[Autoplay, Navigation, Pagination]}
+                        slidesPerView={1}
+                        spaceBetween={24}
+                        loop={advertisementSlides.length > 1}
+                        speed={600}
+                        autoplay={
+                            advertisementSlides.length > 1
+                                ? {
+                                      delay: 4000,
+                                      disableOnInteraction: false,
+                                      pauseOnMouseEnter: true,
+                                  }
+                                : false
+                        }
+                        navigation
+                        pagination={{ clickable: true, dynamicBullets: true }}
+                        className="pb-10 [&_.swiper-button-next]:text-primary [&_.swiper-button-prev]:text-primary"
+                    >
+                        {advertisementSlides.map((pair) => (
+                            <SwiperSlide key={pair.map((a) => a.id).join('-')}>
+                                <div className="grid grid-cols-1 gap-6 px-2 md:grid-cols-2 md:px-6">
+                                    {pair.map((ad) => (
+                                        <AdvertisementCard key={ad.id} ad={ad} />
+                                    ))}
                                 </div>
                             </SwiperSlide>
                         ))}

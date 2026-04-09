@@ -14,6 +14,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialAuthController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
 // Public pages
@@ -56,7 +57,7 @@ Route::get('/google/callback', [SocialAuthController::class, 'handleGoogleCallba
 Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return Inertia::render('Dashboard');
     })->middleware(['verified'])->name('dashboard');
 
     // Profile

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Amenity;
 use App\Models\Property;
 use App\Models\PropertyReview;
 use App\Support\InertiaSerializers;
@@ -159,9 +158,9 @@ class PropertyController extends Controller
 
     public function edit(Property $property)
     {
-        $allAmenities = Amenity::all();
-
-        return view('frontend.properties.edit', compact('property', 'allAmenities'));
+        return Inertia::render('Properties/Edit', [
+            'property' => InertiaSerializers::propertyForEdit($property),
+        ]);
     }
 
     public function update(Request $request, Property $property)

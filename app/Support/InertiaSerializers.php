@@ -87,6 +87,34 @@ class InertiaSerializers
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public static function propertyForEdit(Property $p): array
+    {
+        $images = [];
+        if (is_array($p->images)) {
+            foreach ($p->images as $index => $path) {
+                $images[] = [
+                    'index' => $index,
+                    'url' => asset('storage/'.$path),
+                ];
+            }
+        }
+
+        return [
+            'id' => $p->id,
+            'title' => $p->title,
+            'description' => $p->description ?? '',
+            'price' => (float) $p->price,
+            'type' => $p->type,
+            'availability' => $p->availability,
+            'status' => $p->status,
+            'youtube_link' => $p->youtube_link ?? '',
+            'images' => $images,
+        ];
+    }
+
+    /**
      * @param  Collection<int, GoogleReview>  $reviews
      * @return list<array<string, mixed>>
      */

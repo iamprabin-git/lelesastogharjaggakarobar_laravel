@@ -2,13 +2,12 @@
 
 namespace App\Filament\Agent\Resources\Properties\Schemas;
 
+use App\Filament\Support\PropertyAmenityRepeater;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Auth;
 
 class PropertyForm
 {
@@ -66,25 +65,7 @@ class PropertyForm
                 TextInput::make('longitude')
                     ->numeric()
                     ->default(null),
-                // Select::make('agent_id')
-                //     ->relationship('agent', 'name')
-                //     ->default(Auth::user()->id )
-                //     ->disabled()
-                //     ->required(),
-                Repeater::make('Amenities')
-                    ->columnSpanFull()
-                    ->grid(2)
-                    ->schema([
-                        TextInput::make('name')
-                            ->required(),
-                        TextInput::make('distance')
-                            ->default(null),
-                        Select::make('unit')
-                            ->options(['km' => 'Kilometers', 'm' => 'Meters'])
-                            ->default('km')
-                            ->required(),
-
-                    ]),
+                PropertyAmenityRepeater::make(),
             ]);
     }
 }

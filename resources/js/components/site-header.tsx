@@ -90,12 +90,20 @@ export function SiteHeader() {
                         </Link>
                     ))}
                     {auth.user && (
-                        <Link
-                            href="/dashboard"
-                            className="text-sm font-medium text-zinc-600 transition-colors hover:text-primary dark:text-zinc-400 dark:hover:text-primary"
-                        >
-                            Dashboard
-                        </Link>
+                        <>
+                            <Link
+                                href="/dashboard"
+                                className="text-sm font-medium text-zinc-600 transition-colors hover:text-primary dark:text-zinc-400 dark:hover:text-primary"
+                            >
+                                Dashboard
+                            </Link>
+                            <Link
+                                href="/profile"
+                                className="text-sm font-medium text-zinc-600 transition-colors hover:text-primary dark:text-zinc-400 dark:hover:text-primary"
+                            >
+                                Profile
+                            </Link>
+                        </>
                     )}
                     <Button asChild size="sm">
                         <a href="/agent/login">+ Add property</a>
@@ -130,12 +138,20 @@ export function SiteHeader() {
                                     </Link>
                                 ))}
                                 {auth.user && (
-                                    <Link
-                                        href="/dashboard"
-                                        className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
-                                    >
-                                        Dashboard
-                                    </Link>
+                                    <>
+                                        <Link
+                                            href="/dashboard"
+                                            className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
+                                        >
+                                            Dashboard
+                                        </Link>
+                                        <Link
+                                            href="/profile"
+                                            className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
+                                        >
+                                            Profile
+                                        </Link>
+                                    </>
                                 )}
                                 <Button asChild className="mt-4">
                                     <a href="/agent/login">+ Add property</a>

@@ -1,5 +1,27 @@
 import { Link, useForm, usePage } from '@inertiajs/react';
+import DOMPurify from 'dompurify';
 import { useState } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import {
+    Bath,
+    BedDouble,
+    Bus,
+    Car,
+    Coffee,
+    Dumbbell,
+    Hospital,
+    Landmark,
+    MapPin,
+    Maximize2,
+    School,
+    Shield,
+    ShoppingBag,
+    Train,
+    Trees,
+    UtensilsCrossed,
+    Waves,
+    Wifi,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,10 +35,31 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { PropertyCardLink } from '@/components/property-card-link';
 import { SiteLayout } from '@/layouts/site-layout';
+import { cn } from '@/lib/utils';
 import type { PropertyCard } from '@/types/property';
+
+function getAmenityIcon(name: string): LucideIcon {
+    const n = name.toLowerCase();
+    if (n.includes('school') || n.includes('college') || n.includes('university')) return School;
+    if (n.includes('hospital') || n.includes('clinic') || n.includes('medical') || n.includes('pharmacy')) return Hospital;
+    if (n.includes('park') || n.includes('garden') || n.includes('playground')) return Trees;
+    if (n.includes('gym') || n.includes('fitness')) return Dumbbell;
+    if (n.includes('mall') || n.includes('shop') || n.includes('market') || n.includes('store')) return ShoppingBag;
+    if (n.includes('bus')) return Bus;
+    if (n.includes('train') || n.includes('metro') || n.includes('station')) return Train;
+    if (n.includes('airport') || n.includes('bank') || n.includes('atm')) return Landmark;
+    if (n.includes('coffee') || n.includes('cafe')) return Coffee;
+    if (n.includes('restaurant') || n.includes('dining') || n.includes('food')) return UtensilsCrossed;
+    if (n.includes('pool') || n.includes('swim')) return Waves;
+    if (n.includes('wifi') || n.includes('internet')) return Wifi;
+    if (n.includes('police') || n.includes('security')) return Shield;
+    if (n.includes('parking') || n.includes('garage')) return Car;
+    return MapPin;
+}
 
 type Amenity = { id: number; name: string; distance: string | null; unit: string | null };
 
@@ -153,154 +196,228 @@ export default function PropertyShow({
                             </div>
                         )}
 
-                        <div>
+                        <div className="bg-card rounded-2xl border p-5 shadow-sm sm:p-6">
                             <h1 className="mb-2 text-3xl font-bold tracking-tight">{property.title}</h1>
-                            <p className="text-muted-foreground text-sm">
-                                {[property.location, property.city, property.state, property.country].filter(Boolean).join(' · ')}
-                            </p>
+                            {[
+                                property.location,
+                                property.city,
+                                property.state,
+                                property.country,
+                            ].filter(Boolean).length > 0 ? (
+                                <p className="text-muted-foreground flex items-start gap-2 text-sm">
+                                    <MapPin className="text-primary mt-0.5 size-4 shrink-0" aria-hidden />
+                                    <span>
+                                        {[property.location, property.city, property.state, property.country]
+                                            .filter(Boolean)
+                                            .join(' · ')}
+                                    </span>
+                                </p>
+                            ) : null}
                             <p className="text-primary mt-4 text-3xl font-bold">Rs. {property.price.toLocaleString()}</p>
-                            <div className="text-muted-foreground mt-4 flex flex-wrap gap-6 text-sm">
-                                <span>{property.bedrooms ?? 0} beds</span>
-                                <span>{property.bathrooms ?? 0} baths</span>
-                                <span>{property.area ?? 0} sq.ft</span>
+
+                            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
+                                <div className="bg-muted/50 flex flex-col items-center justify-center gap-1 rounded-xl border px-2 py-4 text-center sm:flex-row sm:gap-3">
+                                    <BedDouble className="text-primary size-5 shrink-0 sm:size-6" aria-hidden />
+                                    <div>
+                                        <p className="text-base font-semibold tabular-nums sm:text-lg">{property.bedrooms ?? 0}</p>
+                                        <p className="text-muted-foreground text-[10px] uppercase sm:text-xs">Beds</p>
+                                    </div>
+                                </div>
+                                <div className="bg-muted/50 flex flex-col items-center justify-center gap-1 rounded-xl border px-2 py-4 text-center sm:flex-row sm:gap-3">
+                                    <Bath className="text-primary size-5 shrink-0 sm:size-6" aria-hidden />
+                                    <div>
+                                        <p className="text-base font-semibold tabular-nums sm:text-lg">{property.bathrooms ?? 0}</p>
+                                        <p className="text-muted-foreground text-[10px] uppercase sm:text-xs">Baths</p>
+                                    </div>
+                                </div>
+                                <div className="bg-muted/50 flex flex-col items-center justify-center gap-1 rounded-xl border px-2 py-4 text-center sm:flex-row sm:gap-3">
+                                    <Maximize2 className="text-primary size-5 shrink-0 sm:size-6" aria-hidden />
+                                    <div>
+                                        <p className="text-base font-semibold tabular-nums sm:text-lg">{property.area ?? 0}</p>
+                                        <p className="text-muted-foreground text-[10px] uppercase sm:text-xs">Sq.ft</p>
+                                    </div>
+                                </div>
                             </div>
+
+                            <Separator className="my-6" />
+
+                            <h2 className="text-muted-foreground mb-3 text-xs font-semibold tracking-wide uppercase">
+                                Amenities & nearby
+                            </h2>
+                            {property.amenities.length > 0 ? (
+                                <ul className="grid gap-3 sm:grid-cols-2">
+                                    {property.amenities.map((a) => {
+                                        const Icon = getAmenityIcon(a.name);
+                                        return (
+                                            <li
+                                                key={a.id}
+                                                className="bg-background flex gap-3 rounded-xl border p-3 text-sm shadow-xs"
+                                            >
+                                                <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                                                    <Icon className="size-5" aria-hidden />
+                                                </span>
+                                                <div className="min-w-0">
+                                                    <p className="font-medium leading-snug">{a.name}</p>
+                                                    {a.distance != null && (
+                                                        <p className="text-muted-foreground mt-0.5 text-xs">
+                                                            {a.distance}
+                                                            {a.unit ? ` ${a.unit}` : ''} away
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            ) : (
+                                <p className="text-muted-foreground text-sm">
+                                    No amenities or nearby points are listed for this property yet.
+                                </p>
+                            )}
                         </div>
 
-                        {property.description && (
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Description</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-muted-foreground whitespace-pre-wrap">{property.description}</p>
-                                </CardContent>
-                            </Card>
-                        )}
-
-                        {property.amenities.length > 0 && (
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Nearby amenities</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <ul className="space-y-2 text-sm">
-                                        {property.amenities.map((a) => (
-                                            <li key={a.id}>
-                                                <span className="font-medium">{a.name}</span>
-                                                {a.distance != null && (
-                                                    <span className="text-muted-foreground">
-                                                        {' '}
-                                                        — {a.distance}
-                                                        {a.unit ? ` ${a.unit}` : ''}
-                                                    </span>
+                        <Tabs defaultValue="details" className="w-full">
+                            <TabsList className="grid h-10 w-full grid-cols-2 sm:inline-flex sm:w-auto">
+                                <TabsTrigger value="details">Property details</TabsTrigger>
+                                <TabsTrigger value="reviews">
+                                    Reviews
+                                    {reviewCount > 0 ? ` (${reviewCount})` : ''}
+                                </TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="details" className="mt-4 space-y-4">
+                                {property.description ? (
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle>Description</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div
+                                                className={cn(
+                                                    'text-muted-foreground max-w-none text-sm leading-relaxed',
+                                                    '[&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-muted-foreground/30 [&_blockquote]:pl-4',
+                                                    '[&_h1]:text-foreground [&_h1]:text-xl [&_h1]:font-semibold [&_h2]:text-foreground [&_h2]:text-lg [&_h2]:font-semibold',
+                                                    '[&_li]:my-0.5 [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-3 [&_p:last-child]:mb-0 [&_strong]:text-foreground',
+                                                    '[&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6',
                                                 )}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-                            </Card>
-                        )}
-
-                        {mapHref && (
-                            <Button variant="outline" asChild>
-                                <a href={mapHref} target="_blank" rel="noreferrer">
-                                    Open in Maps
-                                </a>
-                            </Button>
-                        )}
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Reviews ({reviewCount})</CardTitle>
-                                {reviewCount > 0 && (
-                                    <p className="text-muted-foreground text-sm">
-                                        Average {reviewAverage.toFixed(1)} / 5
-                                    </p>
-                                )}
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                {approvedReviews.length === 0 && <p className="text-muted-foreground text-sm">No reviews yet.</p>}
-                                {approvedReviews.map((r, idx) => (
-                                    <div key={r.id}>
-                                        <div className="mb-1 flex items-center justify-between gap-2">
-                                            <span className="font-medium">{r.user_name}</span>
-                                            <span className="text-primary text-sm" aria-hidden>
-                                                {'★'.repeat(r.rating)}
-                                            </span>
-                                        </div>
-                                        <p className="text-muted-foreground text-sm">{r.comment}</p>
-                                        {idx < approvedReviews.length - 1 ? <Separator className="mt-4" /> : null}
-                                    </div>
-                                ))}
-
-                                {auth.user && userReview && (
-                                    <p className="text-muted-foreground text-sm">
-                                        You already submitted a review (status: {userReview.status}).
-                                    </p>
-                                )}
-
-                                {auth.user && !userReview && (
-                                    <form
-                                        className="space-y-4 border-t pt-6"
-                                        onSubmit={(e) => {
-                                            e.preventDefault();
-                                            reviewForm.post(`/properties/${property.id}/reviews`, { preserveScroll: true });
-                                        }}
-                                    >
-                                        <div>
-                                            <Label htmlFor="rating">Rating</Label>
-                                            <div className="mt-1 w-full max-w-xs">
-                                                <Select
-                                                    value={String(reviewForm.data.rating)}
-                                                    onValueChange={(v) => reviewForm.setData('rating', Number(v))}
-                                                >
-                                                    <SelectTrigger id="rating" className="w-full">
-                                                        <SelectValue placeholder="Stars" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {[5, 4, 3, 2, 1].map((n) => (
-                                                            <SelectItem key={n} value={String(n)}>
-                                                                {n} stars
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            {reviewForm.errors.rating && (
-                                                <p className="text-destructive mt-1 text-xs">{reviewForm.errors.rating}</p>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="comment">Comment</Label>
-                                            <Textarea
-                                                id="comment"
-                                                className="mt-1"
-                                                rows={4}
-                                                value={reviewForm.data.comment}
-                                                onChange={(e) => reviewForm.setData('comment', e.target.value)}
-                                                required
-                                                minLength={10}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: DOMPurify.sanitize(property.description, {
+                                                        USE_PROFILES: { html: true },
+                                                    }),
+                                                }}
                                             />
-                                            {reviewForm.errors.comment && (
-                                                <p className="text-destructive mt-1 text-xs">{reviewForm.errors.comment}</p>
-                                            )}
-                                        </div>
-                                        <Button type="submit" disabled={reviewForm.processing}>
-                                            Submit review
-                                        </Button>
-                                    </form>
+                                        </CardContent>
+                                    </Card>
+                                ) : (
+                                    <p className="text-muted-foreground text-sm">No description provided.</p>
                                 )}
+                                {mapHref && (
+                                    <Button variant="outline" asChild>
+                                        <a href={mapHref} target="_blank" rel="noreferrer">
+                                            Open in Maps
+                                        </a>
+                                    </Button>
+                                )}
+                            </TabsContent>
+                            <TabsContent value="reviews" className="mt-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Reviews</CardTitle>
+                                        {reviewCount > 0 && (
+                                            <p className="text-muted-foreground text-sm">
+                                                Average {reviewAverage.toFixed(1)} / 5 · {reviewCount} review
+                                                {reviewCount === 1 ? '' : 's'}
+                                            </p>
+                                        )}
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        {approvedReviews.length === 0 && (
+                                            <p className="text-muted-foreground text-sm">No reviews yet.</p>
+                                        )}
+                                        {approvedReviews.map((r, idx) => (
+                                            <div key={r.id}>
+                                                <div className="mb-1 flex items-center justify-between gap-2">
+                                                    <span className="font-medium">{r.user_name}</span>
+                                                    <span className="text-primary text-sm" aria-hidden>
+                                                        {'★'.repeat(r.rating)}
+                                                    </span>
+                                                </div>
+                                                <p className="text-muted-foreground text-sm">{r.comment}</p>
+                                                {idx < approvedReviews.length - 1 ? <Separator className="mt-4" /> : null}
+                                            </div>
+                                        ))}
 
-                                {!auth.user && (
-                                    <p className="text-muted-foreground text-sm">
-                                        <Link href="/login" className="text-primary font-medium underline">
-                                            Log in
-                                        </Link>{' '}
-                                        to leave a review.
-                                    </p>
-                                )}
-                            </CardContent>
-                        </Card>
+                                        {auth.user && userReview && (
+                                            <p className="text-muted-foreground text-sm">
+                                                You already submitted a review (status: {userReview.status}).
+                                            </p>
+                                        )}
+
+                                        {auth.user && !userReview && (
+                                            <form
+                                                className="space-y-4 border-t pt-6"
+                                                onSubmit={(e) => {
+                                                    e.preventDefault();
+                                                    reviewForm.post(`/properties/${property.id}/reviews`, {
+                                                        preserveScroll: true,
+                                                    });
+                                                }}
+                                            >
+                                                <div>
+                                                    <Label htmlFor="rating">Rating</Label>
+                                                    <div className="mt-1 w-full max-w-xs">
+                                                        <Select
+                                                            value={String(reviewForm.data.rating)}
+                                                            onValueChange={(v) => reviewForm.setData('rating', Number(v))}
+                                                        >
+                                                            <SelectTrigger id="rating" className="w-full">
+                                                                <SelectValue placeholder="Stars" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {[5, 4, 3, 2, 1].map((n) => (
+                                                                    <SelectItem key={n} value={String(n)}>
+                                                                        {n} stars
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    {reviewForm.errors.rating && (
+                                                        <p className="text-destructive mt-1 text-xs">{reviewForm.errors.rating}</p>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <Label htmlFor="comment">Comment</Label>
+                                                    <Textarea
+                                                        id="comment"
+                                                        className="mt-1"
+                                                        rows={4}
+                                                        value={reviewForm.data.comment}
+                                                        onChange={(e) => reviewForm.setData('comment', e.target.value)}
+                                                        required
+                                                        minLength={10}
+                                                    />
+                                                    {reviewForm.errors.comment && (
+                                                        <p className="text-destructive mt-1 text-xs">{reviewForm.errors.comment}</p>
+                                                    )}
+                                                </div>
+                                                <Button type="submit" disabled={reviewForm.processing}>
+                                                    Submit review
+                                                </Button>
+                                            </form>
+                                        )}
+
+                                        {!auth.user && (
+                                            <p className="text-muted-foreground text-sm">
+                                                <Link href="/login" className="text-primary font-medium underline">
+                                                    Log in
+                                                </Link>{' '}
+                                                to leave a review.
+                                            </p>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                        </Tabs>
                     </div>
 
                     <div className="space-y-6">
@@ -381,19 +498,24 @@ export default function PropertyShow({
                                 </CardContent>
                             </Card>
                         )}
-
-                        {relatedProperties.length > 0 && (
-                            <div>
-                                <h2 className="mb-4 text-lg font-semibold">More in this area</h2>
-                                <div className="space-y-6">
-                                    {relatedProperties.map((p) => (
-                                        <PropertyCardLink key={p.id} p={p} />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
+
+                {relatedProperties.length > 0 && (
+                    <section className="mt-14 border-t pt-12" aria-labelledby="related-properties-heading">
+                        <h2 id="related-properties-heading" className="mb-2 text-2xl font-bold tracking-tight">
+                            Related properties
+                        </h2>
+                        <p className="text-muted-foreground mb-8 text-sm">
+                            {property.city ? `More listings in ${property.city}.` : 'More listings you may like.'}
+                        </p>
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {relatedProperties.map((p) => (
+                                <PropertyCardLink key={p.id} p={p} />
+                            ))}
+                        </div>
+                    </section>
+                )}
             </div>
         </SiteLayout>
     );

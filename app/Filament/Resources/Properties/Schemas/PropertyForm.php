@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Properties\Schemas;
 
+use App\Filament\Support\PropertyAmenityRepeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -90,6 +91,8 @@ class PropertyForm
                     ->searchable()
                     ->preload()
                     ->required(),
+
+                PropertyAmenityRepeater::make(),
             ]);
     }
 }
