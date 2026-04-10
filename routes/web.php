@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\ContactController;
@@ -14,7 +16,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialAuthController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
 // Public pages
@@ -62,15 +63,35 @@ Route::get('/google/callback', [SocialAuthController::class, 'handleGoogleCallba
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->middleware(['verified'])->name('dashboard');
+    Route::redirect('/dashboard', '/account');
+    Route::redirect('/messages', '/account/messages');
+    Route::redirect('/profile', '/account/profile');
 
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::prefix('account')->group(function () {
+        Route::middleware('verified')->group(function () {
+            Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+            Route::get('/property-suggestions', [DashboardController::class, 'propertySuggestions'])
+                ->middleware('throttle:90,1')
+                ->name('account.property-suggestions');
+
+            Route::get('/messages', [ConversationController::class, 'index'])->name('messages.index');
+            Route::post('/messages', [ConversationController::class, 'store'])
+                ->middleware('throttle:20,1')
+                ->name('messages.store');
+            Route::get('/messages/{conversation}', [ConversationController::class, 'show'])->name('messages.show');
+            Route::post('/messages/{conversation}/messages', [ConversationController::class, 'appendMessage'])
+                ->middleware('throttle:60,1')
+                ->name('messages.append');
+        });
+
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
+
+    Route::get('/messages/{conversation}', function (\App\Models\Conversation $conversation) {
+        return redirect()->route('messages.show', $conversation);
+    })->middleware('verified');
 
     // Property management (only owners/admins)
     Route::get('/properties/{property}/edit', [PropertyController::class, 'edit'])

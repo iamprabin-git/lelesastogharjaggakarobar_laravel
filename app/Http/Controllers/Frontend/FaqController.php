@@ -10,17 +10,8 @@ class FaqController extends Controller
 {
     public function index()
     {
-        $faqs = Faq::where('is_active', true)->latest()->get();
-
         return Inertia::render('Faqs', [
-            'faqs' => $faqs
-                ->map(fn (Faq $f) => [
-                    'id' => $f->id,
-                    'question' => $f->question,
-                    'answer' => $f->answer,
-                ])
-                ->values()
-                ->all(),
+            'faqs' => Faq::activeForInertia(),
         ]);
     }
 }

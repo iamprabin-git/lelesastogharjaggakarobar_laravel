@@ -1,4 +1,5 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
+import { FaqSection, type FaqEntry } from '@/components/faq-section';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SiteLayout } from '@/layouts/site-layout';
@@ -63,6 +64,8 @@ const plans: {
 ];
 
 export default function Pricing() {
+    const { faqs } = usePage<{ faqs: FaqEntry[] }>().props;
+
     return (
         <SiteLayout title="Pricing">
             <section className="relative flex min-h-[320px] items-center justify-center overflow-hidden text-primary-foreground">
@@ -117,6 +120,15 @@ export default function Pricing() {
                     </div>
                 </div>
             </section>
+
+            {faqs.length > 0 && (
+                <FaqSection
+                    faqs={faqs}
+                    titleAs="h2"
+                    limit={6}
+                    footerLink={{ href: '/faqs', label: 'View all FAQs' }}
+                />
+            )}
         </SiteLayout>
     );
 }

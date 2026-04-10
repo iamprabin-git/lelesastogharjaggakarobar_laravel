@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { Menu, Moon, Sun } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
@@ -29,15 +30,19 @@ function toggleTheme() {
 const nav = [
     { href: '/', label: 'Home' },
     { href: '/properties', label: 'Properties' },
-    { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
     { href: '/blogs', label: 'Blog' },
-    { href: '/faqs', label: 'FAQs' },
 ];
 
 export function SiteHeader() {
-    const { company, auth } = usePage<{ company: Company; auth: { user: { id: number } | null } }>().props;
+    const { company, auth } = usePage<{
+        company: Company;
+        auth: { user: { id: number } | null; unread_messages_count?: number };
+    }>().props;
+    const unread = auth.unread_messages_count ?? 0;
     const name = company?.name ?? 'RealEstate';
+
+    const loginHref = auth.user ? '/account' : '/login';
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-zinc-200/70 bg-white/95 shadow-none backdrop-blur-md dark:border-zinc-800/70 dark:bg-zinc-950/95">
@@ -89,22 +94,15 @@ export function SiteHeader() {
                             {item.label}
                         </Link>
                     ))}
-                    {auth.user && (
-                        <>
-                            <Link
-                                href="/dashboard"
-                                className="text-sm font-medium text-zinc-600 transition-colors hover:text-primary dark:text-zinc-400 dark:hover:text-primary"
-                            >
-                                Dashboard
-                            </Link>
-                            <Link
-                                href="/profile"
-                                className="text-sm font-medium text-zinc-600 transition-colors hover:text-primary dark:text-zinc-400 dark:hover:text-primary"
-                            >
-                                Profile
-                            </Link>
-                        </>
-                    )}
+                    <Link
+                        href={loginHref}
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-600 transition-colors hover:text-primary dark:text-zinc-400 dark:hover:text-primary"
+                    >
+                        Login
+                        {auth.user && unread > 0 ? (
+                            <Badge className="h-5 min-w-5 rounded-full px-1.5 text-[10px]">{unread > 9 ? '9+' : unread}</Badge>
+                        ) : null}
+                    </Link>
                     <Button asChild size="sm">
                         <a href="/agent/login">+ Add property</a>
                     </Button>
@@ -121,7 +119,7 @@ export function SiteHeader() {
                                 <Menu className="size-5" />
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-[280px]">
+                        <SheetContent side="right" className="w-70">
                             <SheetHeader>
                                 <SheetTitle>Menu</SheetTitle>
                             </SheetHeader>
@@ -137,22 +135,17 @@ export function SiteHeader() {
                                         {item.label}
                                     </Link>
                                 ))}
-                                {auth.user && (
-                                    <>
-                                        <Link
-                                            href="/dashboard"
-                                            className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
-                                        >
-                                            Dashboard
-                                        </Link>
-                                        <Link
-                                            href="/profile"
-                                            className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
-                                        >
-                                            Profile
-                                        </Link>
-                                    </>
-                                )}
+                                <Link
+                                    href={loginHref}
+                                    className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
+                                >
+                                    <span>Login</span>
+                                    {auth.user && unread > 0 ? (
+                                        <Badge className="h-5 min-w-5 rounded-full px-1.5 text-[10px]">
+                                            {unread > 9 ? '9+' : unread}
+                                        </Badge>
+                                    ) : null}
+                                </Link>
                                 <Button asChild className="mt-4">
                                     <a href="/agent/login">+ Add property</a>
                                 </Button>

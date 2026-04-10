@@ -51,4 +51,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(PropertyReview::class);
     }
+
+    public function propertySearches(): HasMany
+    {
+        return $this->hasMany(UserPropertySearch::class);
+    }
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class);
+    }
 }

@@ -8,6 +8,7 @@ use App\Mail\SiteContactFormMail;
 use App\Models\Admin;
 use App\Models\Company;
 use App\Models\ContactSubmission;
+use App\Models\Faq;
 use App\Services\TwilioMessagingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -17,7 +18,9 @@ class ContactController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Contact');
+        return Inertia::render('Contact', [
+            'faqs' => Faq::activeForInertia(),
+        ]);
     }
 
     public function submit(Request $request, TwilioMessagingService $twilio)

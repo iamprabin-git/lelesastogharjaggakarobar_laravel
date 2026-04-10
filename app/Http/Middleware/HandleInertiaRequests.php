@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Company;
+use App\Models\Conversation;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -27,6 +28,9 @@ class HandleInertiaRequests extends Middleware
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
                 ] : null,
+                'unread_messages_count' => $request->user()
+                    ? Conversation::unreadAdminMessagesCountForUser($request->user())
+                    : 0,
             ],
             'flash' => [
                 'success' => $request->session()->get('success'),

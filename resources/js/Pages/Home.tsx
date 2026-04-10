@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { FaqSection } from '@/components/faq-section';
 import { PropertyCardLink } from '@/components/property-card-link';
 import { SiteLayout } from '@/layouts/site-layout';
 import type { PropertyCard } from '@/types/property';
@@ -34,6 +35,8 @@ type About = {
 };
 
 type Ad = { id: number; title: string | null; link: string | null; image: string | null };
+
+type HomeFaq = { id: number; question: string; answer: string };
 
 function chunkAds<T>(items: T[], size: number): T[][] {
     const slides: T[][] = [];
@@ -71,6 +74,7 @@ export default function Home({
     totalReviews,
     about,
     advertisements,
+    faqs,
 }: {
     latestProperties: PropertyCard[];
     reviews: Review[];
@@ -78,6 +82,7 @@ export default function Home({
     totalReviews: number;
     about: About | null;
     advertisements: Ad[];
+    faqs: HomeFaq[];
 }) {
     const [type, setType] = useState(ALL);
     const [sort, setSort] = useState(ALL);
@@ -202,6 +207,16 @@ export default function Home({
                     </Button>
                 </div>
             </section>
+
+            {faqs.length > 0 && (
+                <FaqSection
+                    faqs={faqs}
+                    titleAs="h2"
+                    title="Frequently asked questions"
+                    limit={6}
+                    footerLink={{ href: '/faqs', label: 'View all FAQs' }}
+                />
+            )}
 
             <section className="bg-primary text-primary-foreground py-20 text-center">
                 <div className="container mx-auto px-4">

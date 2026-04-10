@@ -1,6 +1,7 @@
 import { useForm, usePage } from '@inertiajs/react';
 import { Clock, Mail, MapPin, Phone, Send } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { FaqSection, type FaqEntry } from '@/components/faq-section';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -51,7 +52,7 @@ function ContactDetail({
 }
 
 export default function Contact() {
-    const { company } = usePage<{ company: SharedCompany }>().props;
+    const { company, faqs } = usePage<{ company: SharedCompany; faqs: FaqEntry[] }>().props;
 
     const form = useForm({
         name: '',
@@ -268,6 +269,16 @@ export default function Contact() {
                     />
                 </div>
             </section>
+
+            {faqs.length > 0 && (
+                <FaqSection
+                    faqs={faqs}
+                    titleAs="h2"
+                    title="Common questions"
+                    limit={5}
+                    footerLink={{ href: '/faqs', label: 'View all FAQs' }}
+                />
+            )}
         </SiteLayout>
     );
 }

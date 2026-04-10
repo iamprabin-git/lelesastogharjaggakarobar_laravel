@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use App\Models\PropertyReview;
+use App\Models\UserPropertySearch;
 use App\Support\InertiaSerializers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -63,6 +64,30 @@ class PropertyController extends Controller
         $latestProperties->getCollection()->transform(function (Property $p) {
             return InertiaSerializers::propertyCard($p);
         });
+
+        if ($request->user()) {
+            $filterKeys = ['keyword', 'city', 'type', 'bedrooms', 'min_price', 'max_price', 'sort'];
+            $hasFilter = false;
+            foreach ($filterKeys as $key) {
+                if (filled($request->input($key))) {
+                    $hasFilter = true;
+                    break;
+                }
+            }
+            if ($hasFilter) {
+                UserPropertySearch::query()->create([
+                    'user_id' => $request->user()->id,
+                    'keyword' => $request->input('keyword') ?: null,
+                    'city' => $request->input('city') ?: null,
+                    'type' => $request->input('type') ?: null,
+                    'bedrooms' => $request->input('bedrooms') ?: null,
+                    'min_price' => $request->input('min_price') ?: null,
+                    'max_price' => $request->input('max_price') ?: null,
+                    'sort' => $request->input('sort') ?: null,
+                ]);
+                UserPropertySearch::pruneForUser($request->user()->id);
+            }
+        }
 
         return Inertia::render('Properties/Index', [
             'latestProperties' => $latestProperties,

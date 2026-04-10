@@ -12,6 +12,7 @@ use App\Mail\PropertyInquiryAgentMail;
 use App\Models\Admin;
 use App\Models\Advertisement;
 use App\Models\Agent;
+use App\Models\Faq;
 use App\Models\GoogleReview;
 use App\Models\Property;
 use App\Models\PropertyInquiry;
@@ -57,6 +58,7 @@ class PageController extends Controller
                 'happy_clients' => $about->happy_clients,
             ] : null,
             'advertisements' => InertiaSerializers::advertisements($advertisements),
+            'faqs' => Faq::activeForInertia(),
         ]);
     }
 

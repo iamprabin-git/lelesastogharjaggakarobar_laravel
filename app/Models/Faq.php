@@ -14,4 +14,22 @@ class Faq extends Model
         'answer',
         'is_active',
     ];
+
+    /**
+     * @return list<array{id: int, question: string, answer: string}>
+     */
+    public static function activeForInertia(): array
+    {
+        return static::query()
+            ->where('is_active', true)
+            ->latest()
+            ->get()
+            ->map(fn (self $f) => [
+                'id' => $f->id,
+                'question' => $f->question,
+                'answer' => $f->answer,
+            ])
+            ->values()
+            ->all();
+    }
 }
