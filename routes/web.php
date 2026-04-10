@@ -27,10 +27,17 @@ Route::post('/properties/{property}/reviews', [PropertyController::class, 'store
     ->middleware('auth')
     ->name('properties.reviews.store');
 
+// Property listing inquiry (public — buyers must not need an account)
+Route::post('/agent/{agent}/contact', [PageController::class, 'contactAgent'])
+    ->middleware('throttle:20,1')
+    ->name('agent.contact');
+
 // Static pages
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+Route::post('/contact', [ContactController::class, 'submit'])
+    ->middleware('throttle:15,1')
+    ->name('contact.submit');
 Route::get('/faqs', [FaqController::class, 'index'])->name('faqs');
 Route::get('/privacy-policy', [StaticLegalController::class, 'privacy'])->name('privacy.policy');
 Route::get('/terms', [StaticLegalController::class, 'terms'])->name('terms');
@@ -78,10 +85,6 @@ Route::middleware('auth')->group(function () {
     // Payment
     Route::post('/payment/store', [PaymentController::class, 'store'])
         ->name('payment.store');
-
-    // Agent contact (from property page)
-    Route::post('/agent/{agent}/contact', [PageController::class, 'contactAgent'])
-        ->name('agent.contact');
 });
 
 // Admin-only routes

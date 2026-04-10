@@ -3,6 +3,7 @@
 namespace App\Filament\Support;
 
 use App\Filament\Resources\Agents\AgentResource;
+use App\Filament\Resources\ContactSubmissions\ContactSubmissionResource;
 use App\Filament\Resources\Payments\PaymentResource;
 use App\Filament\Resources\Properties\PropertyResource;
 use App\Filament\Resources\PropertyInquiries\PropertyInquiryResource;
@@ -52,6 +53,11 @@ final class DashboardUrls
     public static function inquiriesIndex(): string
     {
         return PropertyInquiryResource::getUrl('index');
+    }
+
+    public static function contactMessagesIndex(): string
+    {
+        return ContactSubmissionResource::getUrl('index');
     }
 
     public static function overviewFragment(): string

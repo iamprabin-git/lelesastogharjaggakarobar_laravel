@@ -111,9 +111,11 @@
                 {{-- Contact Form --}}
                 <form action="{{ route('agent.contact', $property->agent->id) }}" method="POST" class="mt-4 space-y-3">
                     @csrf
-                    <input type="text" name="name" placeholder="Your Name" class="w-full p-2 border rounded">
-                    <input type="email" name="email" placeholder="Your Email" class="w-full p-2 border rounded">
-                    <textarea name="message" placeholder="Your Message" class="w-full p-2 border rounded"></textarea>
+                    <input type="hidden" name="property_id" value="{{ $property->id }}">
+                    <input type="text" name="name" placeholder="Your Name" class="w-full p-2 border rounded" required>
+                    <input type="email" name="email" placeholder="Your Email" class="w-full p-2 border rounded" required>
+                    <input type="tel" name="phone" placeholder="Phone (optional)" class="w-full p-2 border rounded">
+                    <textarea name="message" placeholder="Your message (e.g. plot size, budget, timeline)" class="w-full p-2 border rounded" required></textarea>
                     <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">Send Message</button>
                 </form>
             </div>

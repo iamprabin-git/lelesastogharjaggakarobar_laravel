@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Crm\CrmLeadStage;
+use App\Crm\LeadSource;
 use App\Http\Controllers\Controller;
 use App\Mail\AgentRequestNotification;
 use App\Mail\AgentWelcomeMail;
+use App\Mail\PropertyInquiryAdminMail;
+use App\Mail\PropertyInquiryAgentMail;
 use App\Models\Admin;
 use App\Models\Advertisement;
 use App\Models\Agent;
 use App\Models\GoogleReview;
 use App\Models\Property;
 use App\Models\PropertyInquiry;
+use App\Services\TwilioMessagingService;
 use App\Support\InertiaSerializers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -106,24 +111,66 @@ class PageController extends Controller
         );
     }
 
-    public function contactAgent(Request $request, Agent $agent)
+    public function contactAgent(Request $request, Agent $agent, TwilioMessagingService $twilio)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'message' => 'required|string',
+            'phone' => 'nullable|string|max:32',
+            'message' => 'required|string|max:5000',
             'property_id' => 'required|exists:properties,id',
         ]);
 
-        PropertyInquiry::create([
+        $property = Property::query()->findOrFail($data['property_id']);
+        if ((int) $property->agent_id !== (int) $agent->id) {
+            abort(403, 'This listing is not assigned to this agent.');
+        }
+
+        $inquiry = PropertyInquiry::create([
             'property_id' => $data['property_id'],
             'agent_id' => $agent->id,
             'name' => $data['name'],
             'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'lead_source' => LeadSource::WEBSITE,
             'message' => $data['message'],
             'is_read' => false,
+            'crm_status' => CrmLeadStage::NEW,
         ]);
 
-        return back()->with('success', 'Message sent to agent successfully!');
+        $inquiry->load(['property', 'agent']);
+
+        $twilio->notifyPropertyInquiry($inquiry);
+
+        if (filled($agent->email)) {
+            try {
+                Mail::to($agent->email)->send(new PropertyInquiryAgentMail($inquiry));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
+        $adminEmails = Admin::query()
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
+            ->pluck('email')
+            ->map(fn (string $e): string => strtolower(trim($e)))
+            ->filter(fn (string $e): bool => filter_var($e, FILTER_VALIDATE_EMAIL) !== false)
+            ->unique()
+            ->values()
+            ->all();
+
+        if ($adminEmails !== []) {
+            try {
+                Mail::to($adminEmails)->send(new PropertyInquiryAdminMail($inquiry));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
+        return back()->with(
+            'success',
+            'Your message was sent. The agent has been notified by email — you can expect a reply at '.$data['email'].'.'
+        );
     }
 }

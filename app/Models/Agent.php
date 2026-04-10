@@ -84,4 +84,9 @@ class Agent extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Property::class);
     }
+
+    public function propertyInquiries(): HasMany
+    {
+        return $this->hasMany(PropertyInquiry::class);
+    }
 }

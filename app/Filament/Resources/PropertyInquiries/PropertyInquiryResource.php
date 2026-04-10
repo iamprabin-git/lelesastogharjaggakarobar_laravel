@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PropertyInquiries;
 
+use App\Filament\Resources\PropertyInquiries\Pages\CreatePropertyInquiry;
 use App\Filament\Resources\PropertyInquiries\Pages\EditPropertyInquiry;
 use App\Filament\Resources\PropertyInquiries\Pages\ListPropertyInquiries;
 use App\Filament\Resources\PropertyInquiries\Schemas\PropertyInquiryForm;
@@ -22,22 +23,21 @@ class PropertyInquiryResource extends Resource
 
     protected static ?string $navigationLabel = 'Leads & inquiries';
 
-    protected static ?string $modelLabel = 'Lead';
+    protected static ?string $modelLabel = 'Land lead';
 
-    protected static ?string $pluralModelLabel = 'CRM — leads';
+    protected static ?string $pluralModelLabel = 'Land sales leads';
 
     protected static string|UnitEnum|null $navigationGroup = 'CRM';
 
     protected static ?int $navigationSort = 5;
 
-    public static function canCreate(): bool
-    {
-        return false;
-    }
-
     public static function form(Schema $schema): Schema
     {
-        return PropertyInquiryForm::configure($schema);
+        if ($schema->getOperation() === 'create') {
+            return PropertyInquiryForm::configureCreate($schema, forAgent: false);
+        }
+
+        return PropertyInquiryForm::configure($schema, forAgent: false);
     }
 
     public static function table(Table $table): Table
@@ -54,6 +54,7 @@ class PropertyInquiryResource extends Resource
     {
         return [
             'index' => ListPropertyInquiries::route('/'),
+            'create' => CreatePropertyInquiry::route('/create'),
             'edit' => EditPropertyInquiry::route('/{record}/edit'),
         ];
     }

@@ -2,9 +2,11 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Resources\PropertyInquiries\PropertyInquiryResource;
 use App\Filament\Widgets\CrmStatsOverview;
 use App\Livewire\CrmLeadsTable;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Schema;
@@ -35,7 +37,21 @@ class CrmConsole extends Page
 
     public function getSubheading(): ?string
     {
-        return 'Pipeline overview, live lead table, quick replies, and bulk updates.';
+        return 'Land-sales funnel: contact → site visit → offer → pending close. Live table, mailto actions, and bulk stage moves.';
+    }
+
+    /**
+     * @return array<Action | \Filament\Actions\ActionGroup>
+     */
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('addLead')
+                ->label('Add lead')
+                ->icon(Heroicon::OutlinedPlus)
+                ->url(PropertyInquiryResource::getUrl('create'))
+                ->color('success'),
+        ];
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Agent\Widgets;
 
+use App\Crm\CrmLeadStage;
 use App\Models\Property;
 use App\Models\PropertyInquiry;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -22,6 +23,14 @@ class AgentStats extends BaseWidget
             ->where('is_read', false)
             ->count();
 
+        $activeLeads = PropertyInquiry::where('agent_id', $agentId)
+            ->whereNotIn('crm_status', [CrmLeadStage::CLOSED_WON, CrmLeadStage::CLOSED_LOST])
+            ->count();
+
+        $wonDeals = PropertyInquiry::where('agent_id', $agentId)
+            ->where('crm_status', CrmLeadStage::CLOSED_WON)
+            ->count();
+
         return [
             Stat::make('Total Properties', $totalProperties)
                 ->description('All your listed properties')
@@ -38,10 +47,20 @@ class AgentStats extends BaseWidget
                 ->icon('heroicon-o-clock')
                 ->color('warning'),
 
-            Stat::make('Unread Inquiries', $unreadInquiries)
-                ->description('New messages from buyers')
+            Stat::make('Active sales leads', $activeLeads)
+                ->description('Open pipeline (not won/lost)')
+                ->icon('heroicon-o-funnel')
+                ->color('primary'),
+
+            Stat::make('Unread inquiries', $unreadInquiries)
+                ->description('Needs first response')
                 ->icon('heroicon-o-chat-bubble-left-ellipsis')
-                ->color('danger'),
+                ->color('warning'),
+
+            Stat::make('Deals won', $wonDeals)
+                ->description('Closed — won')
+                ->icon('heroicon-o-check-badge')
+                ->color('success'),
         ];
     }
 }

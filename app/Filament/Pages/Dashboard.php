@@ -27,7 +27,8 @@ class Dashboard extends BaseDashboard
     {
         $lc = e(DashboardUrls::propertiesApproved());
         $ap = e(DashboardUrls::propertiesPending());
-        $us = e(DashboardUrls::inquiriesIndex());
+        $leads = e(DashboardUrls::inquiriesIndex());
+        $contact = e(DashboardUrls::contactMessagesIndex());
         $ag = e(DashboardUrls::agentsIndex());
         $rv = e(DashboardUrls::paymentsIndex());
         $ov = e(DashboardUrls::overviewFragment());
@@ -38,7 +39,8 @@ class Dashboard extends BaseDashboard
             'Monitor '.
             "<a href=\"{$lc}\" class=\"{$a}\">listings</a>, ".
             "<a href=\"{$ap}\" class=\"{$a}\">approvals</a>, ".
-            "<a href=\"{$us}\" class=\"{$a}\">users</a>, ".
+            "<a href=\"{$leads}\" class=\"{$a}\">land leads</a>, ".
+            "<a href=\"{$contact}\" class=\"{$a}\">contact form</a>, ".
             "<a href=\"{$ag}\" class=\"{$a}\">agents</a>, ".
             'and '.
             "<a href=\"{$rv}\" class=\"{$a}\">revenue</a> ".

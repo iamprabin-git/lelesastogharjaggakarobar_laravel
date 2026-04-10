@@ -9,6 +9,10 @@ class Company extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
     protected $fillable = [
         'name',
         'email',

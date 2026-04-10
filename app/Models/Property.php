@@ -81,6 +81,11 @@ class Property extends Model
         return $this->reviews()->where('status', 'approved');
     }
 
+    public function inquiries(): HasMany
+    {
+        return $this->hasMany(PropertyInquiry::class);
+    }
+
     public function getFirstImageUrlAttribute()
     {
         return isset($this->images[0])

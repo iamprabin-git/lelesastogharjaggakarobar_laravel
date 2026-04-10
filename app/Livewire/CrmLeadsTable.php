@@ -2,6 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Crm\CrmLeadStage;
+use App\Crm\LeadSource;
+use App\Filament\Agent\Resources\LandLeads\LandLeadResource;
 use App\Filament\Resources\Properties\PropertyResource;
 use App\Filament\Resources\PropertyInquiries\PropertyInquiryResource;
 use App\Models\PropertyInquiry;
@@ -32,35 +35,95 @@ class CrmLeadsTable extends Component implements HasActions, HasSchemas, HasTabl
     use InteractsWithSchemas;
     use InteractsWithTable;
 
+    public ?int $scopedAgentId = null;
+
+    public function mount(?int $scopedAgentId = null): void
+    {
+        $this->scopedAgentId = $scopedAgentId;
+    }
+
+    protected function inquiryEditUrl(PropertyInquiry $record): string
+    {
+        if ($this->scopedAgentId !== null) {
+            return LandLeadResource::getUrl('edit', ['record' => $record]);
+        }
+
+        return PropertyInquiryResource::getUrl('edit', ['record' => $record]);
+    }
+
     public function table(Table $table): Table
     {
         return $table
-            ->query(fn (): Builder => PropertyInquiry::query()->with(['property', 'agent']))
+            ->query(function (): Builder {
+                $query = PropertyInquiry::query()->with(['property', 'agent']);
+
+                if ($this->scopedAgentId !== null) {
+                    $query->where('agent_id', $this->scopedAgentId);
+                }
+
+                return $query;
+            })
             ->poll('30s')
             ->columns([
                 TextColumn::make('name')
+                    ->label('Buyer')
                     ->searchable()
                     ->sortable()
                     ->description(fn (PropertyInquiry $record): ?string => $record->email),
+                TextColumn::make('phone')
+                    ->label('Phone')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('property.title')
-                    ->label('Property')
+                    ->label('Land / listing')
+                    ->placeholder('— General lead')
                     ->limit(40)
                     ->sortable()
                     ->url(fn (PropertyInquiry $record): ?string => $record->property
                         ? PropertyResource::getUrl('edit', ['record' => $record->property])
                         : null),
+                TextColumn::make('property.area')
+                    ->label('Plot area')
+                    ->placeholder('—')
+                    ->suffix(' sq.ft')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('agent.name')
                     ->label('Agent')
+                    ->sortable()
+                    ->visible(fn (): bool => $this->scopedAgentId === null),
+                TextColumn::make('lead_source')
+                    ->label('Source')
+                    ->formatStateUsing(fn (?string $state): string => LeadSource::label($state))
+                    ->badge()
+                    ->color('gray')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('deal_value')
+                    ->label('Deal (est.)')
+                    ->money('NPR')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('expected_close_date')
+                    ->label('Target close')
+                    ->date()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('next_follow_up_at')
+                    ->label('Follow-up')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('crm_status')
+                    ->label('Stage')
+                    ->formatStateUsing(fn (?string $state): string => CrmLeadStage::label($state))
+                    ->badge()
+                    ->color(fn (?string $state): string => CrmLeadStage::color($state))
                     ->sortable(),
                 TextColumn::make('message')
                     ->label('Message')
                     ->limit(50)
                     ->tooltip(fn (PropertyInquiry $record): string => $record->message)
-                    ->wrap(),
-                TextColumn::make('crm_status')
-                    ->label('Stage')
-                    ->badge()
-                    ->sortable(),
+                    ->wrap()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_read')
                     ->label('Read')
                     ->boolean(),
@@ -70,13 +133,10 @@ class CrmLeadsTable extends Component implements HasActions, HasSchemas, HasTabl
             ])
             ->filters([
                 SelectFilter::make('crm_status')
-                    ->options([
-                        'new' => 'New',
-                        'contacted' => 'Contacted',
-                        'qualified' => 'Qualified',
-                        'closed_won' => 'Closed — won',
-                        'closed_lost' => 'Closed — lost',
-                    ]),
+                    ->label('Stage')
+                    ->options(CrmLeadStage::options()),
+                SelectFilter::make('lead_source')
+                    ->options(LeadSource::options()),
                 SelectFilter::make('is_read')
                     ->options([
                         '1' => 'Read',
@@ -85,14 +145,14 @@ class CrmLeadsTable extends Component implements HasActions, HasSchemas, HasTabl
             ])
             ->recordActions([
                 Action::make('manage')
-                    ->label('Lead')
+                    ->label('Open lead')
                     ->icon(Heroicon::OutlinedPencilSquare)
-                    ->url(fn (PropertyInquiry $record): string => PropertyInquiryResource::getUrl('edit', ['record' => $record])),
+                    ->url(fn (PropertyInquiry $record): string => $this->inquiryEditUrl($record)),
                 Action::make('email')
                     ->label('Email')
                     ->icon(Heroicon::OutlinedEnvelope)
                     ->url(function (PropertyInquiry $record): string {
-                        $subject = 'Re: '.($record->property?->title ?? 'Property inquiry');
+                        $subject = 'Re: '.($record->property?->title ?? 'General land inquiry');
 
                         return 'mailto:'.rawurlencode($record->email)
                             .'?subject='.rawurlencode($subject)
@@ -128,13 +188,7 @@ class CrmLeadsTable extends Component implements HasActions, HasSchemas, HasTabl
                         ->schema([
                             Select::make('crm_status')
                                 ->label('Pipeline stage')
-                                ->options([
-                                    'new' => 'New',
-                                    'contacted' => 'Contacted',
-                                    'qualified' => 'Qualified',
-                                    'closed_won' => 'Closed — won',
-                                    'closed_lost' => 'Closed — lost',
-                                ])
+                                ->options(CrmLeadStage::options())
                                 ->required(),
                         ])
                         ->action(function (Collection $records, array $data): void {
@@ -142,7 +196,8 @@ class CrmLeadsTable extends Component implements HasActions, HasSchemas, HasTabl
                                 'crm_status' => $data['crm_status'],
                             ]));
                         }),
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => $this->scopedAgentId === null),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

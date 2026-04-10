@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\PropertyInquiries\Tables;
 
+use App\Crm\CrmLeadStage;
+use App\Crm\LeadSource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -17,21 +19,58 @@ class PropertyInquiriesTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Buyer')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('email')
+                    ->sortable()
+                    ->description(fn ($record): ?string => $record->email),
+                TextColumn::make('phone')
+                    ->label('Phone')
                     ->searchable()
-                    ->sortable(),
+                    ->toggleable(),
                 TextColumn::make('property.title')
-                    ->label('Property')
-                    ->limit(35)
+                    ->label('Land / listing')
+                    ->placeholder('— General lead')
+                    ->limit(32)
                     ->sortable(),
+                TextColumn::make('property.area')
+                    ->label('Area')
+                    ->placeholder('—')
+                    ->suffix(' sq.ft')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('property.location')
+                    ->label('Location')
+                    ->placeholder('—')
+                    ->limit(24)
+                    ->toggleable(),
                 TextColumn::make('agent.name')
                     ->label('Agent')
                     ->sortable(),
+                TextColumn::make('lead_source')
+                    ->label('Source')
+                    ->formatStateUsing(fn (?string $state): string => LeadSource::label($state))
+                    ->badge()
+                    ->color('gray')
+                    ->toggleable(),
+                TextColumn::make('deal_value')
+                    ->label('Deal (est.)')
+                    ->money('NPR')
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('expected_close_date')
+                    ->label('Target close')
+                    ->date()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('next_follow_up_at')
+                    ->label('Follow-up')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('crm_status')
                     ->label('Stage')
+                    ->formatStateUsing(fn (?string $state): string => CrmLeadStage::label($state))
                     ->badge()
+                    ->color(fn (?string $state): string => CrmLeadStage::color($state))
                     ->sortable(),
                 IconColumn::make('is_read')
                     ->label('Read')
@@ -42,13 +81,10 @@ class PropertyInquiriesTable
             ])
             ->filters([
                 SelectFilter::make('crm_status')
-                    ->options([
-                        'new' => 'New',
-                        'contacted' => 'Contacted',
-                        'qualified' => 'Qualified',
-                        'closed_won' => 'Closed — won',
-                        'closed_lost' => 'Closed — lost',
-                    ]),
+                    ->label('Stage')
+                    ->options(CrmLeadStage::options()),
+                SelectFilter::make('lead_source')
+                    ->options(LeadSource::options()),
                 SelectFilter::make('is_read')
                     ->options([
                         '1' => 'Read',

@@ -4,8 +4,10 @@ namespace App\Filament\Widgets;
 
 use App\Filament\Support\DashboardUrls;
 use App\Models\Agent;
+use App\Models\ContactSubmission;
 use App\Models\Payment;
 use App\Models\Property;
+use App\Models\PropertyInquiry;
 use App\Models\User;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
@@ -28,7 +30,7 @@ class DashboardOverviewWidget extends StatsOverviewWidget
         'sm' => 2,
         'md' => 3,
         'lg' => 4,
-        'xl' => 5,
+        'xl' => 6,
     ];
 
     public function getSectionContentComponent(): Component
@@ -61,7 +63,16 @@ class DashboardOverviewWidget extends StatsOverviewWidget
             Stat::make('Site users', User::count())
                 ->description('Registered accounts')
                 ->descriptionIcon('heroicon-m-users')
-                ->color('primary')
+                ->color('primary'),
+            Stat::make('Contact form', ContactSubmission::query()->where('is_read', false)->count())
+                ->description('Unread website messages')
+                ->descriptionIcon('heroicon-m-chat-bubble-left-right')
+                ->color('warning')
+                ->url(DashboardUrls::contactMessagesIndex()),
+            Stat::make('Land leads', PropertyInquiry::query()->where('is_read', false)->count())
+                ->description('Unread listing inquiries')
+                ->descriptionIcon('heroicon-m-inbox')
+                ->color('info')
                 ->url(DashboardUrls::inquiriesIndex()),
             Stat::make('Agents', Agent::count())
                 ->description('Agent accounts')

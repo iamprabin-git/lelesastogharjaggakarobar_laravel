@@ -15,6 +15,11 @@ class ListPropertyInquiries extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('addLead')
+                ->label('Add lead')
+                ->icon(Heroicon::OutlinedPlus)
+                ->url(static::getResource()::getUrl('create'))
+                ->color('success'),
             Action::make('fullCrm')
                 ->label('Open full CRM')
                 ->icon(Heroicon::OutlinedChartBar)

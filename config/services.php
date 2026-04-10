@@ -46,4 +46,19 @@ return [
         'redirect' => env('GOOGLE_REDIRECT'),
     ],
 
+    /*
+    | SMS via Twilio (optional). Use either TWILIO_MESSAGING_SERVICE_SID (recommended) or TWILIO_FROM.
+    | When credentials are missing or TWILIO_ENABLED=false, no SMS is sent (email flow unchanged).
+    */
+    'twilio' => [
+        'enabled' => filter_var(env('TWILIO_ENABLED', true), FILTER_VALIDATE_BOOL),
+        'account_sid' => env('TWILIO_ACCOUNT_SID'),
+        'auth_token' => env('TWILIO_AUTH_TOKEN'),
+        'messaging_service_sid' => env('TWILIO_MESSAGING_SERVICE_SID'),
+        'from' => env('TWILIO_FROM'),
+        'default_country_code' => env('TWILIO_DEFAULT_COUNTRY_CODE', '977'),
+        'contact_notify_numbers' => env('TWILIO_CONTACT_NOTIFY_NUMBERS'),
+        'inquiry_notify_numbers' => env('TWILIO_INQUIRY_NOTIFY_NUMBERS'),
+    ],
+
 ];

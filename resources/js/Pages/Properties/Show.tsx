@@ -130,6 +130,7 @@ export default function PropertyShow({
     const contactForm = useForm({
         name: auth.user?.name ?? '',
         email: auth.user?.email ?? '',
+        phone: '',
         message: '',
         property_id: property.id,
     });
@@ -450,7 +451,19 @@ export default function PropertyShow({
                                         className="space-y-3"
                                         onSubmit={(e) => {
                                             e.preventDefault();
-                                            contactForm.post(`/agent/${property.agent!.id}/contact`, { preserveScroll: true });
+                                            contactForm.post(`/agent/${property.agent!.id}/contact`, {
+                                                preserveScroll: true,
+                                                onSuccess: () => {
+                                                    contactForm.reset();
+                                                    contactForm.setData({
+                                                        name: auth.user?.name ?? '',
+                                                        email: auth.user?.email ?? '',
+                                                        phone: '',
+                                                        message: '',
+                                                        property_id: property.id,
+                                                    });
+                                                },
+                                            });
                                         }}
                                     >
                                         <div>
@@ -476,6 +489,19 @@ export default function PropertyShow({
                                             />
                                             {contactForm.errors.email && (
                                                 <p className="text-destructive text-xs">{contactForm.errors.email}</p>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="cphone">Phone (optional)</Label>
+                                            <Input
+                                                id="cphone"
+                                                type="tel"
+                                                autoComplete="tel"
+                                                value={contactForm.data.phone}
+                                                onChange={(e) => contactForm.setData('phone', e.target.value)}
+                                            />
+                                            {contactForm.errors.phone && (
+                                                <p className="text-destructive text-xs">{contactForm.errors.phone}</p>
                                             )}
                                         </div>
                                         <div>
