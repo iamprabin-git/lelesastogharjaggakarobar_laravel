@@ -1,1 +1,0 @@
-<?php echo e($livewireKey); ?>.panel<?php /**PATH G:\lelesastogharagga_laravel\realestate\storage\framework\views/bb5f87a16bad0318417b86d0784607f7.blade.php ENDPATH**/ ?>

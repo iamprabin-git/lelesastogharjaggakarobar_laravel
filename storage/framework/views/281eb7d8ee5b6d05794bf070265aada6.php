@@ -107,7 +107,12 @@
                 <?php echo e(\Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SIDEBAR_LOGO_BEFORE)); ?>
 
 
-                <div x-show="$store.sidebar.isOpen" class="fi-sidebar-header-logo-ctn">
+                <div
+                    <?php if($isSidebarCollapsibleOnDesktop || $isSidebarFullyCollapsibleOnDesktop): ?>
+                        x-show="$store.sidebar.isOpen"
+                    <?php endif; ?>
+                    class="fi-sidebar-header-logo-ctn"
+                >
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($homeUrl = filament()->getHomeUrl()): ?>
                         <a <?php echo e(\Filament\Support\generate_href_html($homeUrl)); ?>>
                             <?php if (isset($component)) { $__componentOriginalb501e8c73315a10eb0eb5fd14fda0d94 = $component; } ?>
@@ -201,16 +206,21 @@ $__split = function ($name, $params = []) {
 };
 [$__name, $__params] = $__split(Filament\Livewire\GlobalSearch::class);
 
-$key = null;
+$__keyOuter = $__key ?? null;
+
+$__key = null;
 $__componentSlots = [];
 
-$key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-1472393494-0', $key);
+$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-1472393494-0', $__key);
 
-$__html = app('livewire')->mount($__name, $__params, $key, $__componentSlots);
+$__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
 
 echo $__html;
 
 unset($__html);
+unset($__key);
+$__key = $__keyOuter;
+unset($__keyOuter);
 unset($__name);
 unset($__params);
 unset($__componentSlots);
@@ -224,7 +234,7 @@ unset($__split);
 
 
             <ul class="fi-sidebar-nav-groups">
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $navigation; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $navigation; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                     <?php
                         $isGroupActive = $group->isActive();
                         $isGroupCollapsible = $group->isCollapsible();
@@ -317,20 +327,25 @@ unset($__split);
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split(Filament\Livewire\DatabaseNotifications::class, [
+[$__name, $__params] = $__split(filament()->getDatabaseNotificationsLivewireComponent(), [
                         'lazy' => filament()->hasLazyLoadedDatabaseNotifications(),
                     ]);
 
-$key = null;
+$__keyOuter = $__key ?? null;
+
+$__key = null;
 $__componentSlots = [];
 
-$key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-1472393494-1', $key);
+$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-1472393494-1', $__key);
 
-$__html = app('livewire')->mount($__name, $__params, $key, $__componentSlots);
+$__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
 
 echo $__html;
 
 unset($__html);
+unset($__key);
+$__key = $__keyOuter;
+unset($__keyOuter);
 unset($__name);
 unset($__params);
 unset($__componentSlots);

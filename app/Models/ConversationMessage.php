@@ -18,9 +18,12 @@ class ConversationMessage extends Model
     protected static function booted(): void
     {
         static::created(function (ConversationMessage $message) {
-            $message->conversation->update([
-                'last_message_at' => $message->created_at,
-            ]);
+            $conversation = $message->conversation;
+            $payload = ['last_message_at' => $message->created_at];
+            if ($conversation->status === Conversation::STATUS_CLOSED) {
+                $payload['status'] = Conversation::STATUS_OPEN;
+            }
+            $conversation->update($payload);
         });
     }
 

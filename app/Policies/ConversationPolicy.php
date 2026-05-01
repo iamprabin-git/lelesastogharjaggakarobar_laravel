@@ -33,6 +33,6 @@ class ConversationPolicy
             return true;
         }
 
-        return (int) $conversation->user_id === (int) $user->id && $conversation->isOpen();
+        return (int) $conversation->user_id === (int) $user->id;
     }
 }

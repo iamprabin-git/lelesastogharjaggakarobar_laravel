@@ -116,7 +116,7 @@ unset($__defined_vars, $__key, $__value); ?>
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($hasHeader): ?>
         <header
             <?php if($collapsible): ?>
-                x-on:click="isCollapsed = ! isCollapsed"
+                x-on:click="if (! $event.target.closest('.fi-section-header-after-ctn')) isCollapsed = ! isCollapsed"
             <?php endif; ?>
             class="fi-section-header"
         >
@@ -143,7 +143,7 @@ unset($__defined_vars, $__key, $__value); ?>
             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(! is_slot_empty($afterHeader)): ?>
-                <div x-on:click.stop class="fi-section-header-after-ctn">
+                <div class="fi-section-header-after-ctn">
                     <?php echo e($afterHeader); ?>
 
                 </div>

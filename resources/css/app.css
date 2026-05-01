@@ -102,3 +102,29 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* Homepage advertisements: continuous horizontal scroll, full loop every 30s */
+@keyframes home-ad-marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+.home-ad-marquee-track {
+    width: max-content;
+    animation: home-ad-marquee 30s linear infinite;
+}
+
+.home-ad-marquee-track:hover {
+    animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-ad-marquee-track {
+        animation: none;
+        transform: none;
+    }
+}

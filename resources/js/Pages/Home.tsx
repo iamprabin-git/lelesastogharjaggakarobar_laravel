@@ -1,10 +1,5 @@
 import { useMemo, useState } from 'react';
 import { Link } from '@inertiajs/react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FaqSection } from '@/components/faq-section';
 import { PropertyCardLink } from '@/components/property-card-link';
 import { SiteLayout } from '@/layouts/site-layout';
+import { cn } from '@/lib/utils';
 import type { PropertyCard } from '@/types/property';
 
 const ALL = '__all__';
@@ -229,38 +225,35 @@ export default function Home({
             </section>
 
             {advertisements.length > 0 && (
-                <section className="container mx-auto py-16 px-4">
-                    <h2 className="mb-2 text-center text-2xl font-bold">Advertisements</h2>
-                    <p className="text-muted-foreground mb-8 text-center text-sm">Sponsored promotions</p>
-                    <Swiper
-                        modules={[Autoplay, Navigation, Pagination]}
-                        slidesPerView={1}
-                        spaceBetween={24}
-                        loop={advertisementSlides.length > 1}
-                        speed={600}
-                        autoplay={
-                            advertisementSlides.length > 1
-                                ? {
-                                      delay: 4000,
-                                      disableOnInteraction: false,
-                                      pauseOnMouseEnter: true,
-                                  }
-                                : false
-                        }
-                        navigation
-                        pagination={{ clickable: true, dynamicBullets: true }}
-                        className="pb-10 [&_.swiper-button-next]:text-primary [&_.swiper-button-prev]:text-primary"
-                    >
-                        {advertisementSlides.map((pair) => (
-                            <SwiperSlide key={pair.map((a) => a.id).join('-')}>
-                                <div className="grid grid-cols-1 gap-6 px-2 md:grid-cols-2 md:px-6">
-                                    {pair.map((ad) => (
-                                        <AdvertisementCard key={ad.id} ad={ad} />
-                                    ))}
+                <section className="py-16">
+                    <div className="container mx-auto px-4">
+                        <h2 className="mb-2 text-center text-2xl font-bold">Advertisements</h2>
+                        <p className="text-muted-foreground mb-8 text-center text-sm">Sponsored promotions</p>
+                    </div>
+                    <div className="w-full overflow-hidden">
+                        <div
+                            className={cn(
+                                'flex gap-0',
+                                advertisementSlides.length > 1 ? 'home-ad-marquee-track' : 'mx-auto justify-center',
+                            )}
+                        >
+                            {(advertisementSlides.length > 1
+                                ? [...advertisementSlides, ...advertisementSlides]
+                                : advertisementSlides
+                            ).map((pair, idx) => (
+                                <div
+                                    key={`${pair.map((a) => a.id).join('-')}-${idx}`}
+                                    className="box-border flex min-w-[100vw] shrink-0 justify-center px-4 md:px-8"
+                                >
+                                    <div className="container mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 md:grid-cols-2">
+                                        {pair.map((ad) => (
+                                            <AdvertisementCard key={`${ad.id}-${idx}`} ad={ad} />
+                                        ))}
+                                    </div>
                                 </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
+                            ))}
+                        </div>
+                    </div>
                 </section>
             )}
 

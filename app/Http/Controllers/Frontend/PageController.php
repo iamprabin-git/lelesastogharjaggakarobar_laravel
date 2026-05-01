@@ -62,6 +62,13 @@ class PageController extends Controller
         ]);
     }
 
+    public function agents_index()
+    {
+        return Inertia::render('Agents/Index', [
+            'agents' => InertiaSerializers::publicAgents(),
+        ]);
+    }
+
     public function agent_form()
     {
         return Inertia::render('AgentForm');

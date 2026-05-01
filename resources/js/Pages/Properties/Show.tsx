@@ -421,8 +421,9 @@ export default function PropertyShow({
                         </Tabs>
                     </div>
 
-                    <div className="space-y-6">
+                    <aside className="min-h-0 space-y-6">
                         {property.agent && (
+                            <div className="lg:sticky lg:top-28 lg:z-10 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:overscroll-contain">
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Listing agent</CardTitle>
@@ -523,8 +524,9 @@ export default function PropertyShow({
                                     </form>
                                 </CardContent>
                             </Card>
+                            </div>
                         )}
-                    </div>
+                    </aside>
                 </div>
 
                 {relatedProperties.length > 0 && (

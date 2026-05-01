@@ -15,6 +15,7 @@ use App\Http\Controllers\Frontend\StaticLegalController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialAuthController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -23,6 +24,7 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 
 // Properties (public)
 Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
+Route::get('/sold-properties', [PropertyController::class, 'sold'])->name('properties.sold');
 Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 Route::post('/properties/{property}/reviews', [PropertyController::class, 'storeReview'])
     ->middleware('auth')
@@ -50,6 +52,8 @@ Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
 
 // Agent public registration
+Route::get('/agents', [PageController::class, 'agents_index'])->name('agents.index');
+
 // Agent Authentication Routes
 Route::get('/agent-form', [PageController::class, 'agent_form'])->name('agent.form');
 Route::post('/agent-store', [PageController::class, 'agent_store'])->name('agent.store');
@@ -60,6 +64,20 @@ Route::get('/google/login', function () {
 })->name('google.login');
 
 Route::get('/google/callback', [SocialAuthController::class, 'handleGoogleCallback'])->name('google.callback');
+
+Route::post('/staff/agent/logout', function (\Illuminate\Http\Request $request) {
+    Auth::guard('agent')->logout();
+    $request->session()->regenerateToken();
+
+    return redirect('/');
+})->middleware('auth:agent')->name('staff.agent.logout');
+
+Route::post('/staff/admin/logout', function (\Illuminate\Http\Request $request) {
+    Auth::guard('admin')->logout();
+    $request->session()->regenerateToken();
+
+    return redirect('/');
+})->middleware('auth:admin')->name('staff.admin.logout');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
@@ -79,6 +97,9 @@ Route::middleware('auth')->group(function () {
                 ->middleware('throttle:20,1')
                 ->name('messages.store');
             Route::get('/messages/{conversation}', [ConversationController::class, 'show'])->name('messages.show');
+            Route::get('/messages/{conversation}/updates', [ConversationController::class, 'updates'])
+                ->middleware('throttle:120,1')
+                ->name('messages.updates');
             Route::post('/messages/{conversation}/messages', [ConversationController::class, 'appendMessage'])
                 ->middleware('throttle:60,1')
                 ->name('messages.append');

@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Property;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class PropertyRejected extends Notification
@@ -25,5 +26,14 @@ class PropertyRejected extends Notification
             'reason' => $this->reason,
             'message' => 'Your property has been rejected.',
         ];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject('Update on your listing')
+            ->line('Your listing «'.$this->property->title.'» was not approved.')
+            ->line('Reason: '.$this->reason)
+            ->action('Open agent panel', url('/agent'));
     }
 }

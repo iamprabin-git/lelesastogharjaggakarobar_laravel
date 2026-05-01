@@ -3,9 +3,11 @@
 namespace App\Support;
 
 use App\Models\Advertisement;
+use App\Models\Agent;
 use App\Models\GoogleReview;
 use App\Models\Property;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class InertiaSerializers
 {
@@ -141,5 +143,49 @@ class InertiaSerializers
             'link' => $a->link,
             'image' => $a->image ? asset('storage/'.$a->image) : null,
         ])->values()->all();
+    }
+
+    /**
+     * Active, non-expired agents for public directory (footer + /agents page).
+     *
+     * @return list<array{id: int, name: string, email: string, phone: ?string, address: ?string, avatar_url: ?string, facebook: ?string, twitter: ?string, linkedin: ?string, instagram: ?string}>
+     */
+    public static function publicAgents(): array
+    {
+        $normalizeUrl = static function (?string $url): ?string {
+            if ($url === null || trim($url) === '') {
+                return null;
+            }
+
+            $url = trim($url);
+            if (! preg_match('#^https?://#i', $url)) {
+                return 'https://'.$url;
+            }
+
+            return $url;
+        };
+
+        return Agent::query()
+            ->publicDirectory()
+            ->orderBy('name')
+            ->get()
+            ->map(static function (Agent $agent) use ($normalizeUrl): array {
+                return [
+                    'id' => $agent->id,
+                    'name' => $agent->name,
+                    'email' => $agent->email,
+                    'phone' => $agent->phone,
+                    'address' => $agent->address ? trim((string) $agent->address) : null,
+                    'avatar_url' => $agent->avatar
+                        ? Storage::disk('public')->url($agent->avatar)
+                        : null,
+                    'facebook' => $normalizeUrl($agent->facebook),
+                    'twitter' => $normalizeUrl($agent->twitter),
+                    'linkedin' => $normalizeUrl($agent->linkedin),
+                    'instagram' => $normalizeUrl($agent->instagram),
+                ];
+            })
+            ->values()
+            ->all();
     }
 }

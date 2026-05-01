@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Agent;
 use App\Models\Property;
 use App\Models\PropertyReview;
 use App\Models\UserPropertySearch;
@@ -17,6 +18,21 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         $query = Property::approved()->available();
+
+        $filteredAgent = null;
+        if ($request->filled('agent')) {
+            $agentId = (int) $request->input('agent');
+            if ($agentId > 0) {
+                $agent = Agent::query()->publicDirectory()->whereKey($agentId)->first();
+                if ($agent !== null) {
+                    $query->where('agent_id', $agent->id);
+                    $filteredAgent = [
+                        'id' => $agent->id,
+                        'name' => $agent->name,
+                    ];
+                }
+            }
+        }
 
         if ($request->filled('keyword')) {
             $query->where(function ($q) use ($request) {
@@ -91,6 +107,7 @@ class PropertyController extends Controller
 
         return Inertia::render('Properties/Index', [
             'latestProperties' => $latestProperties,
+            'filtered_agent' => $filteredAgent,
             'filters' => [
                 'keyword' => $request->input('keyword', ''),
                 'city' => $request->input('city', ''),
@@ -99,7 +116,30 @@ class PropertyController extends Controller
                 'min_price' => $request->input('min_price', ''),
                 'max_price' => $request->input('max_price', ''),
                 'sort' => $request->input('sort', ''),
+                'agent' => $filteredAgent !== null ? (string) $filteredAgent['id'] : '',
             ],
+        ]);
+    }
+
+    /**
+     * Approved properties marked as sold (archive list — no detail page for these listings).
+     */
+    public function sold()
+    {
+        $properties = Property::query()
+            ->approved()
+            ->sold()
+            ->with('agent')
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        $properties->getCollection()->transform(function (Property $p) {
+            return InertiaSerializers::propertyCard($p);
+        });
+
+        return Inertia::render('SoldProperties', [
+            'properties' => $properties,
         ]);
     }
 

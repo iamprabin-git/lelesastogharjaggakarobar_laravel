@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 test('profile page is displayed', function () {
     $user = User::factory()->create();
@@ -31,6 +33,31 @@ test('profile information can be updated', function () {
     $this->assertSame('Test User', $user->name);
     $this->assertSame('test@example.com', $user->email);
     $this->assertNull($user->email_verified_at);
+});
+
+test('profile avatar can be uploaded', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+
+    $file = UploadedFile::fake()->create('avatar.jpg', 120, 'image/jpeg');
+
+    $response = $this
+        ->actingAs($user)
+        ->patch('/account/profile', [
+            'name' => $user->name,
+            'email' => $user->email,
+            'avatar' => $file,
+        ]);
+
+    $response
+        ->assertSessionHasNoErrors()
+        ->assertRedirect('/account/profile');
+
+    $user->refresh();
+
+    expect($user->avatar)->not->toBeNull();
+    Storage::disk('public')->assertExists($user->avatar);
 });
 
 test('email verification status is unchanged when the email address is unchanged', function () {

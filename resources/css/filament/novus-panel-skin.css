@@ -1,0 +1,273 @@
+/**
+ * NOVUS-inspired shell for Filament agent & admin panels (scoped via body.fi-panel-*).
+ * Purple sidebar, white top bar, soft gray canvas, dashboard-style stat strips.
+ */
+
+@layer components {
+    html.fi body.fi-panel-admin.fi-body,
+    html.fi body.fi-panel-agent.fi-body {
+        --novus-purple: #5f5af0;
+        --novus-gold: #e8c547;
+        --novus-canvas: #f2f2f2;
+
+        @apply bg-[var(--novus-canvas)] dark:bg-zinc-950;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-layout,
+    html.fi body.fi-panel-agent.fi-body .fi-layout {
+        @apply bg-[var(--novus-canvas)] dark:bg-zinc-950;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-main-ctn,
+    html.fi body.fi-panel-agent.fi-body .fi-main-ctn {
+        @apply bg-[var(--novus-canvas)] dark:bg-zinc-950;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-main,
+    html.fi body.fi-panel-agent.fi-body .fi-main {
+        @apply bg-transparent;
+    }
+
+    /* ----- Top bar (white strip, NOVUS-like) ----- */
+    html.fi body.fi-panel-admin.fi-body .fi-topbar-ctn,
+    html.fi body.fi-panel-agent.fi-body .fi-topbar-ctn {
+        @apply border-b border-zinc-200/90 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-topbar,
+    html.fi body.fi-panel-agent.fi-body .fi-topbar {
+        @apply ring-0;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-global-search-field,
+    html.fi body.fi-panel-agent.fi-body .fi-global-search-field {
+        @apply rounded-full border-zinc-200/90 bg-zinc-50 shadow-none ring-1 ring-zinc-200/70 dark:border-zinc-700 dark:bg-zinc-800/80 dark:ring-zinc-700;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-user-menu-trigger,
+    html.fi body.fi-panel-agent.fi-body .fi-user-menu-trigger {
+        @apply rounded-full ring-2 ring-white shadow-md ring-offset-2 ring-offset-white dark:ring-zinc-700 dark:ring-offset-zinc-900;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-topbar-database-notifications-btn,
+    html.fi body.fi-panel-agent.fi-body .fi-topbar-database-notifications-btn {
+        @apply rounded-full bg-zinc-100/90 hover:bg-zinc-200/90 dark:bg-zinc-800 dark:hover:bg-zinc-700;
+    }
+
+    /* ----- Sidebar: solid purple rail ----- */
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar.fi-main-sidebar,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar.fi-main-sidebar {
+        @apply bg-[var(--novus-purple)] shadow-none ring-0 lg:bg-[var(--novus-purple)];
+    }
+
+    html.fi.dark body.fi-panel-admin.fi-body .fi-sidebar.fi-main-sidebar,
+    html.fi.dark body.fi-panel-agent.fi-body .fi-sidebar.fi-main-sidebar {
+        @apply bg-gray-700 lg:bg-gray-700;
+    }
+
+    @media (width >= 1024px) {
+        html.fi body.fi-panel-admin.fi-body .fi-sidebar.fi-sidebar-open,
+        html.fi body.fi-panel-agent.fi-body .fi-sidebar.fi-sidebar-open {
+            @apply border-e border-white/10 bg-[var(--novus-purple)] shadow-none ring-0;
+        }
+
+        html.fi.dark body.fi-panel-admin.fi-body .fi-sidebar.fi-sidebar-open,
+        html.fi.dark body.fi-panel-agent.fi-body .fi-sidebar.fi-sidebar-open {
+            @apply bg-gray-700;
+        }
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-close-overlay,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-close-overlay {
+        @apply bg-zinc-950/45 dark:bg-black/60;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-header-ctn,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-header-ctn {
+        @apply border-b border-white/10 bg-transparent;
+    }
+
+    html.fi body.fi-panel-admin.fi-body.fi-body-has-topbar .fi-sidebar-header,
+    html.fi body.fi-panel-agent.fi-body.fi-body-has-topbar .fi-sidebar-header {
+        @apply bg-[var(--novus-purple)] ring-0 ring-transparent dark:bg-gray-700;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-nav,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-nav {
+        @apply gap-y-5 py-6;
+        scrollbar-color: rgb(255 255 255 / 0.35) transparent;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-nav-groups,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-nav-groups {
+        @apply gap-y-5;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-group-label,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-group-label {
+        @apply text-[0.65rem] font-bold uppercase tracking-[0.08em] text-white/45;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-group-dropdown-trigger-btn,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-group-dropdown-trigger-btn {
+        @apply text-white/85 hover:bg-white/10 hover:text-white dark:hover:bg-white/10;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-group-dropdown-trigger-btn .fi-icon,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-group-dropdown-trigger-btn .fi-icon {
+        @apply text-white/70;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-group.fi-active .fi-sidebar-group-dropdown-trigger-btn .fi-icon,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-group.fi-active .fi-sidebar-group-dropdown-trigger-btn .fi-icon {
+        @apply text-[var(--novus-gold)];
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item-btn,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item-btn {
+        @apply rounded-lg px-3 py-2.5 text-white/85 transition-colors duration-150;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item-btn > .fi-icon,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item-btn > .fi-icon {
+        @apply text-white/65;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item-label,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item-label {
+        @apply font-medium text-white/90;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover {
+        @apply bg-white/10;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover > .fi-icon,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover > .fi-icon {
+        @apply text-white;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+        @apply bg-white/15 font-semibold text-[var(--novus-gold)] shadow-none ring-1 ring-white/20;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+        @apply text-[var(--novus-gold)];
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item.fi-active .fi-sidebar-item-label,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item.fi-active .fi-sidebar-item-label {
+        @apply text-[var(--novus-gold)];
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item-grouped-border-part-not-first,
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item-grouped-border-part-not-last,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item-grouped-border-part-not-first,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item-grouped-border-part-not-last {
+        @apply bg-white/25;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item-grouped-border-part,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item-grouped-border-part {
+        @apply bg-white/40;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item.fi-active .fi-sidebar-item-grouped-border-part,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item.fi-active .fi-sidebar-item-grouped-border-part {
+        @apply bg-[var(--novus-gold)];
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-item-badge-ctn .fi-badge,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-item-badge-ctn .fi-badge {
+        @apply font-semibold shadow-none ring-1 ring-white/25;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-database-notifications-btn,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-database-notifications-btn {
+        @apply text-white/85 hover:bg-white/10;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-database-notifications-btn > .fi-icon,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-database-notifications-btn > .fi-icon {
+        @apply text-white/70;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-database-notifications-btn-label,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-database-notifications-btn-label {
+        @apply text-white/90;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-footer,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-footer {
+        @apply border-t border-white/10 pt-3;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-sidebar-footer .fi-user-menu-trigger-text,
+    html.fi body.fi-panel-agent.fi-body .fi-sidebar-footer .fi-user-menu-trigger-text {
+        @apply text-white/95;
+    }
+
+    /* ----- Page chrome ----- */
+    html.fi body.fi-panel-admin.fi-body .fi-header,
+    html.fi body.fi-panel-agent.fi-body .fi-header {
+        @apply border-zinc-200/90 pb-6 dark:border-zinc-800;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-header-heading,
+    html.fi body.fi-panel-agent.fi-body .fi-header-heading {
+        @apply text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-50;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-section:not(.fi-section-not-contained):not(.fi-aside),
+    html.fi body.fi-panel-agent.fi-body .fi-section:not(.fi-section-not-contained):not(.fi-aside),
+    html.fi body.fi-panel-admin.fi-body .fi-ta-ctn,
+    html.fi body.fi-panel-agent.fi-body .fi-ta-ctn {
+        @apply rounded-xl border-0 bg-white shadow-md shadow-zinc-900/5 ring-1 ring-zinc-200/80 dark:bg-zinc-900 dark:ring-zinc-800;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-section-header,
+    html.fi body.fi-panel-agent.fi-body .fi-section-header {
+        @apply border-b border-zinc-100 bg-white dark:border-zinc-800 dark:bg-zinc-900;
+    }
+
+    /* ----- Stats overview: colored top bands (NOVUS KPI strips) ----- */
+    html.fi body.fi-panel-admin.fi-body .fi-wi-stats-overview-stat,
+    html.fi body.fi-panel-agent.fi-body .fi-wi-stats-overview-stat {
+        @apply relative overflow-hidden rounded-xl border-0 bg-white pt-4 shadow-md shadow-zinc-900/8 ring-1 ring-zinc-200/70 dark:bg-zinc-900 dark:ring-zinc-800;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-wi-stats-overview-stat::before,
+    html.fi body.fi-panel-agent.fi-body .fi-wi-stats-overview-stat::before {
+        content: '';
+        @apply absolute inset-x-0 top-0 h-2 bg-blue-500;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-wi-stats-overview .fi-wi-stats-overview-stat:nth-child(3n + 2)::before,
+    html.fi body.fi-panel-agent.fi-body .fi-wi-stats-overview .fi-wi-stats-overview-stat:nth-child(3n + 2)::before {
+        @apply bg-zinc-600 dark:bg-zinc-500;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-wi-stats-overview .fi-wi-stats-overview-stat:nth-child(3n + 3)::before,
+    html.fi body.fi-panel-agent.fi-body .fi-wi-stats-overview .fi-wi-stats-overview-stat:nth-child(3n + 3)::before {
+        @apply bg-orange-500;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-wi-stats-overview-stat-content,
+    html.fi body.fi-panel-agent.fi-body .fi-wi-stats-overview-stat-content {
+        @apply px-6 pb-6 pt-2;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-wi-stats-overview-stat-label,
+    html.fi body.fi-panel-agent.fi-body .fi-wi-stats-overview-stat-label {
+        @apply text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400;
+    }
+
+    html.fi body.fi-panel-admin.fi-body .fi-wi-stats-overview-stat-value,
+    html.fi body.fi-panel-agent.fi-body .fi-wi-stats-overview-stat-value {
+        @apply text-3xl font-bold tabular-nums text-zinc-900 dark:text-white;
+    }
+
+}

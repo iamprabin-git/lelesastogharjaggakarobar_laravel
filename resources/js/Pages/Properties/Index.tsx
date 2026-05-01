@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink } from '@/components/ui/pagination';
@@ -24,14 +25,19 @@ type Filters = {
     min_price: string;
     max_price: string;
     sort: string;
+    agent: string;
 };
+
+type FilteredAgent = { id: number; name: string } | null;
 
 export default function PropertiesIndex({
     latestProperties,
     filters,
+    filtered_agent = null,
 }: {
     latestProperties: PaginatedProperties;
     filters: Filters;
+    filtered_agent?: FilteredAgent;
 }) {
     const f = filters;
     const [type, setType] = useState(f.type || ALL);
@@ -39,11 +45,25 @@ export default function PropertiesIndex({
     const [sort, setSort] = useState(f.sort || ALL);
 
     return (
-        <SiteLayout title="Properties">
+        <SiteLayout title={filtered_agent ? `Properties · ${filtered_agent.name}` : 'Properties'}>
             <section className="bg-muted/40 py-10">
                 <div className="container mx-auto px-4">
                     <h1 className="mb-6 text-center text-3xl font-bold tracking-tight">Properties</h1>
+
+                    {filtered_agent ? (
+                        <div className="border-primary/25 bg-primary/8 mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3">
+                            <p className="text-sm text-foreground/90">
+                                Showing listings by{' '}
+                                <span className="font-semibold">{filtered_agent.name}</span>.
+                            </p>
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href="/properties">Show all agents</Link>
+                            </Button>
+                        </div>
+                    ) : null}
+
                     <form action="/properties" method="get" className="bg-card rounded-2xl border p-6 shadow-sm">
+                        <input type="hidden" name="agent" value={f.agent} />
                         <input type="hidden" name="type" value={type === ALL ? '' : type} />
                         <input type="hidden" name="bedrooms" value={bedrooms === ALL ? '' : bedrooms} />
                         <input type="hidden" name="sort" value={sort === ALL ? '' : sort} />

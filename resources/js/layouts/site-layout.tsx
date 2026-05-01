@@ -11,14 +11,18 @@ export function SiteLayout({
 }: PropsWithChildren<{
     title?: string;
 }>) {
-    const { flash } = usePage<{ flash: Flash }>().props;
+    const page = usePage<{ flash: Flash; auth: { user: { id: number } | null } }>();
+    const { flash } = page.props;
+    const path = page.url.split('?')[0] ?? '';
+    const accountPanelOnly = Boolean(page.props.auth?.user && path.startsWith('/account'));
+
     const pageTitle = title ? `${title} | Lele Sasto Ghar` : 'Lele Sasto Ghar Jagga Karobar Kendra';
 
     return (
         <>
             <Head title={pageTitle} />
             <div className="flex min-h-screen flex-col">
-                <SiteHeader />
+                {!accountPanelOnly ? <SiteHeader /> : null}
                 <main className="flex-1">
                     {flash?.success && (
                         <div className="container mx-auto px-4 pt-4">
@@ -42,7 +46,7 @@ export function SiteLayout({
                     )}
                     {children}
                 </main>
-                <SiteFooter />
+                {!accountPanelOnly ? <SiteFooter /> : null}
             </div>
         </>
     );

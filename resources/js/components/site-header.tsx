@@ -1,8 +1,16 @@
-import { Link, usePage } from '@inertiajs/react';
-import { Menu, Moon, Sun } from 'lucide-react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { LayoutDashboard, LogOut, Menu, MessageCircle, Moon, Sun, UserCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
 type Company = {
@@ -17,6 +25,13 @@ type Company = {
     whatsapp?: string | null;
 } | null;
 
+type SessionPerson = {
+    id: number;
+    name: string;
+    email: string;
+    avatar_url: string | null;
+};
+
 function toggleTheme() {
     const root = document.documentElement;
     root.classList.toggle('dark');
@@ -27,6 +42,36 @@ function toggleTheme() {
     }
 }
 
+function initialsFromName(name: string): string {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) {
+        return '?';
+    }
+    if (parts.length === 1) {
+        return parts[0].slice(0, 2).toUpperCase();
+    }
+
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function UserAvatarThumb({ name, src, className }: { name: string; src: string | null; className?: string }) {
+    if (src) {
+        return <img src={src} alt="" className={cn('rounded-full object-cover', className)} />;
+    }
+
+    return (
+        <span
+            className={cn(
+                'bg-primary/15 text-primary flex items-center justify-center rounded-full text-xs font-semibold',
+                className,
+            )}
+            aria-hidden
+        >
+            {initialsFromName(name)}
+        </span>
+    );
+}
+
 const nav = [
     { href: '/', label: 'Home' },
     { href: '/properties', label: 'Properties' },
@@ -34,15 +79,157 @@ const nav = [
     { href: '/blogs', label: 'Blog' },
 ];
 
+type SessionKind = 'user' | 'agent' | 'admin';
+
 export function SiteHeader() {
     const { company, auth } = usePage<{
         company: Company;
-        auth: { user: { id: number } | null; unread_messages_count?: number };
+        auth: {
+            user: SessionPerson | null;
+            agent: SessionPerson | null;
+            admin: SessionPerson | null;
+            unread_messages_count?: number;
+        };
     }>().props;
+
     const unread = auth.unread_messages_count ?? 0;
     const name = company?.name ?? 'RealEstate';
 
-    const loginHref = auth.user ? '/account' : '/login';
+    const session:
+        | { kind: SessionKind; id: number; name: string; email: string; avatar_url: string | null }
+        | null = auth.user
+        ? { kind: 'user', ...auth.user }
+        : auth.agent
+          ? { kind: 'agent', ...auth.agent }
+          : auth.admin
+            ? { kind: 'admin', ...auth.admin }
+            : null;
+
+    const addPropertyHref = auth.agent ? '/agent' : '/agent/login';
+
+    function ProfileDropdown({ alignEnd }: { alignEnd?: boolean }) {
+        if (!session) {
+            return null;
+        }
+
+        const label =
+            session.kind === 'user' ? 'Member account' : session.kind === 'agent' ? 'Agent account' : 'Admin account';
+
+        return (
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="size-10 shrink-0 overflow-hidden rounded-full p-0"
+                        aria-label={`Open account menu (${session.name})`}
+                    >
+                        <UserAvatarThumb name={session.name} src={session.avatar_url} className="size-10 border-0" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align={alignEnd ? 'end' : 'start'} className="w-56">
+                    <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col gap-0.5">
+                            <span className="text-muted-foreground text-xs">{label}</span>
+                            <span className="truncate font-medium">{session.name}</span>
+                            <span className="text-muted-foreground truncate text-xs">{session.email}</span>
+                        </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {session.kind === 'user' ? (
+                        <>
+                            <DropdownMenuItem asChild>
+                                <Link href="/account" className="cursor-pointer">
+                                    <LayoutDashboard className="size-4" />
+                                    Dashboard
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href="/account/messages" className="cursor-pointer">
+                                    <MessageCircle className="size-4" />
+                                    Messages
+                                    {unread > 0 ? (
+                                        <Badge className="ml-auto h-5 min-w-5 rounded-full px-1 text-[10px]">{unread > 9 ? '9+' : unread}</Badge>
+                                    ) : null}
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href="/account/profile" className="cursor-pointer">
+                                    <UserCircle className="size-4" />
+                                    Profile & password
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onSelect={(e) => {
+                                    e.preventDefault();
+                                    router.post('/logout');
+                                }}
+                            >
+                                <LogOut className="size-4" />
+                                Log out
+                            </DropdownMenuItem>
+                        </>
+                    ) : null}
+                    {session.kind === 'agent' ? (
+                        <>
+                            <DropdownMenuItem asChild>
+                                <a href="/agent" className="cursor-pointer">
+                                    <LayoutDashboard className="size-4" />
+                                    Agent dashboard
+                                </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <a href="/agent" className="cursor-pointer">
+                                    <UserCircle className="size-4" />
+                                    Profile & password (panel menu)
+                                </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onSelect={(e) => {
+                                    e.preventDefault();
+                                    router.post('/staff/agent/logout');
+                                }}
+                            >
+                                <LogOut className="size-4" />
+                                Log out
+                            </DropdownMenuItem>
+                        </>
+                    ) : null}
+                    {session.kind === 'admin' ? (
+                        <>
+                            <DropdownMenuItem asChild>
+                                <a href="/admin" className="cursor-pointer">
+                                    <LayoutDashboard className="size-4" />
+                                    Admin dashboard
+                                </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <a href="/admin" className="cursor-pointer">
+                                    <UserCircle className="size-4" />
+                                    Profile & password (panel menu)
+                                </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onSelect={(e) => {
+                                    e.preventDefault();
+                                    router.post('/staff/admin/logout');
+                                }}
+                            >
+                                <LogOut className="size-4" />
+                                Log out
+                            </DropdownMenuItem>
+                        </>
+                    ) : null}
+                </DropdownMenuContent>
+            </DropdownMenu>
+        );
+    }
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-zinc-200/70 bg-white/95 shadow-none backdrop-blur-md dark:border-zinc-800/70 dark:bg-zinc-950/95">
@@ -67,10 +254,6 @@ export function SiteHeader() {
                             <i className="fa-brands fa-youtube" />
                         </a>
                     )}
-                    <Button type="button" variant="ghost" size="icon" className="text-primary-foreground" onClick={toggleTheme}>
-                        <Moon className="size-4 dark:hidden" />
-                        <Sun className="hidden size-4 dark:inline" />
-                    </Button>
                 </div>
             </div>
 
@@ -79,12 +262,10 @@ export function SiteHeader() {
                     {company?.logo && (
                         <img src={company.logo} alt="" className="size-12 shrink-0 rounded-full border object-cover md:size-14" />
                     )}
-                    <span className="truncate text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-50 md:text-xl">
-                        {name}
-                    </span>
+                    <span className="truncate text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-50 md:text-xl">{name}</span>
                 </Link>
 
-                <nav className="hidden items-center gap-6 md:flex">
+                <nav className="hidden items-center gap-4 md:flex md:gap-6">
                     {nav.map((item) => (
                         <Link
                             key={item.href}
@@ -94,17 +275,22 @@ export function SiteHeader() {
                             {item.label}
                         </Link>
                     ))}
-                    <Link
-                        href={loginHref}
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-600 transition-colors hover:text-primary dark:text-zinc-400 dark:hover:text-primary"
-                    >
-                        Login
-                        {auth.user && unread > 0 ? (
-                            <Badge className="h-5 min-w-5 rounded-full px-1.5 text-[10px]">{unread > 9 ? '9+' : unread}</Badge>
-                        ) : null}
-                    </Link>
+                    {session ? (
+                        <ProfileDropdown alignEnd />
+                    ) : (
+                        <Link
+                            href="/login"
+                            className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-600 transition-colors hover:text-primary dark:text-zinc-400 dark:hover:text-primary"
+                        >
+                            Login
+                        </Link>
+                    )}
                     <Button asChild size="sm">
-                        <a href="/agent/login">+ Add property</a>
+                        <a href={addPropertyHref}>+ Add property</a>
+                    </Button>
+                    <Button type="button" variant="outline" size="icon" className="shrink-0" aria-label="Toggle dark mode" onClick={toggleTheme}>
+                        <Moon className="size-4 dark:hidden" />
+                        <Sun className="hidden size-4 dark:inline" />
                     </Button>
                 </nav>
 
@@ -119,36 +305,129 @@ export function SiteHeader() {
                                 <Menu className="size-5" />
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-70">
+                        <SheetContent side="right" className="w-[min(100vw-2rem,22rem)]">
                             <SheetHeader>
                                 <SheetTitle>Menu</SheetTitle>
                             </SheetHeader>
                             <nav className="mt-6 flex flex-col gap-1 px-2">
                                 {nav.map((item) => (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        className={cn(
-                                            'rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70',
-                                        )}
-                                    >
-                                        {item.label}
-                                    </Link>
+                                    <SheetClose asChild key={item.href}>
+                                        <Link
+                                            href={item.href}
+                                            className={cn(
+                                                'rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70',
+                                            )}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    </SheetClose>
                                 ))}
-                                <Link
-                                    href={loginHref}
-                                    className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
-                                >
-                                    <span>Login</span>
-                                    {auth.user && unread > 0 ? (
-                                        <Badge className="h-5 min-w-5 rounded-full px-1.5 text-[10px]">
-                                            {unread > 9 ? '9+' : unread}
-                                        </Badge>
-                                    ) : null}
-                                </Link>
-                                <Button asChild className="mt-4">
-                                    <a href="/agent/login">+ Add property</a>
-                                </Button>
+                                {session ? (
+                                    <>
+                                        <div className="border-border mt-4 flex justify-center border-t pt-4">
+                                            <UserAvatarThumb name={session.name} src={session.avatar_url} className="size-12 border border-border" />
+                                            <span className="sr-only">
+                                                {session.name}, {session.email}
+                                            </span>
+                                        </div>
+                                        {session.kind === 'user' ? (
+                                            <>
+                                                <SheetClose asChild>
+                                                    <Link
+                                                        href="/account"
+                                                        className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
+                                                    >
+                                                        Dashboard
+                                                    </Link>
+                                                </SheetClose>
+                                                <SheetClose asChild>
+                                                    <Link
+                                                        href="/account/messages"
+                                                        className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
+                                                    >
+                                                        Messages
+                                                        {unread > 0 ? (
+                                                            <Badge className="h-5 min-w-5 rounded-full px-1.5 text-[10px]">{unread > 9 ? '9+' : unread}</Badge>
+                                                        ) : null}
+                                                    </Link>
+                                                </SheetClose>
+                                                <SheetClose asChild>
+                                                    <Link
+                                                        href="/account/profile"
+                                                        className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
+                                                    >
+                                                        Profile & password
+                                                    </Link>
+                                                </SheetClose>
+                                                <Button
+                                                    variant="outline"
+                                                    className="mt-2 w-full justify-start text-destructive hover:text-destructive"
+                                                    type="button"
+                                                    onClick={() => router.post('/logout')}
+                                                >
+                                                    <LogOut className="size-4" />
+                                                    Log out
+                                                </Button>
+                                            </>
+                                        ) : null}
+                                        {session.kind === 'agent' ? (
+                                            <>
+                                                <SheetClose asChild>
+                                                    <a
+                                                        href="/agent"
+                                                        className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
+                                                    >
+                                                        Agent dashboard
+                                                    </a>
+                                                </SheetClose>
+                                                <Button
+                                                    variant="outline"
+                                                    className="mt-2 w-full justify-start text-destructive hover:text-destructive"
+                                                    type="button"
+                                                    onClick={() => router.post('/staff/agent/logout')}
+                                                >
+                                                    <LogOut className="size-4" />
+                                                    Log out
+                                                </Button>
+                                            </>
+                                        ) : null}
+                                        {session.kind === 'admin' ? (
+                                            <>
+                                                <SheetClose asChild>
+                                                    <a
+                                                        href="/admin"
+                                                        className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
+                                                    >
+                                                        Admin dashboard
+                                                    </a>
+                                                </SheetClose>
+                                                <Button
+                                                    variant="outline"
+                                                    className="mt-2 w-full justify-start text-destructive hover:text-destructive"
+                                                    type="button"
+                                                    onClick={() => router.post('/staff/admin/logout')}
+                                                >
+                                                    <LogOut className="size-4" />
+                                                    Log out
+                                                </Button>
+                                            </>
+                                        ) : null}
+                                    </>
+                                ) : (
+                                    <SheetClose asChild>
+                                        <Link
+                                            href="/login"
+                                            className="rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70"
+                                        >
+                                            Login
+                                        </Link>
+                                    </SheetClose>
+                                )}
+                                <SheetClose asChild>
+                                    <Button asChild className="mt-4 w-full">
+                                        <a href={addPropertyHref}>+ Add property</a>
+                                    </Button>
+                                </SheetClose>
                             </nav>
                         </SheetContent>
                     </Sheet>

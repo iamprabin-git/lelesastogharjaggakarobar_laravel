@@ -27,15 +27,15 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->darkMode(true)
-            ->brandName('Lele Sasto Ghar Admin')
+            ->brandName('Lele Sasto Ghar · Admin')
             ->brandLogo(asset('images/logo.png'))
             ->brandLogoHeight('3rem')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->colors([
-                'primary' => Color::Orange,
+                'primary' => Color::hex('#5f5af0'),
                 'danger' => Color::Rose,
                 'success' => Color::Emerald,
-                'warning' => Color::Amber,
+                'warning' => Color::hex('#e8c547'),
                 'gray' => Color::Zinc,
             ])
             ->font('Inter')

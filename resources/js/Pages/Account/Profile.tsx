@@ -1,5 +1,6 @@
 import { router, useForm, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { PanelPageHeader, PanelWidget } from '@/components/account/panel-widgets';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -11,11 +12,13 @@ type User = {
     name: string;
     email: string;
     email_verified_at: string | null;
+    avatar_url: string | null;
 };
 
 type PageErrors = {
     name?: string;
     email?: string;
+    avatar?: string;
     updatePassword?: Record<string, string>;
     userDeletion?: Record<string, string>;
 };
@@ -28,10 +31,24 @@ type Props = {
 
 export default function Edit({ mustVerifyEmail, status, user }: Props) {
     const { errors: pageErrors } = usePage<{ errors: PageErrors }>().props;
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (photoPreview?.startsWith('blob:')) {
+                URL.revokeObjectURL(photoPreview);
+            }
+        };
+    }, [photoPreview]);
+
     const profileForm = useForm({
         name: user.name,
         email: user.email,
+        avatar: null as File | null,
     });
+
+    const displayPhoto = photoPreview ?? user.avatar_url;
 
     const [passwordFields, setPasswordFields] = useState({
         current_password: '',
@@ -49,22 +66,90 @@ export default function Edit({ mustVerifyEmail, status, user }: Props) {
     return (
         <SiteLayout title="Profile">
             <AccountShell>
-            <div className="container mx-auto max-w-2xl space-y-8 px-4 py-10">
-                <section className="bg-card rounded-xl border p-6 shadow-sm sm:p-8">
-                    <header className="mb-6">
-                        <h2 className="text-lg font-semibold">Profile information</h2>
-                        <p className="text-muted-foreground mt-1 text-sm">
-                            Update your account profile and email address.
-                        </p>
-                    </header>
+                <div className="mx-auto max-w-2xl space-y-6">
+                    <PanelPageHeader
+                        title="Profile & security"
+                        description="Update how you appear on the site and manage your password."
+                    />
 
+                    <PanelWidget
+                        title="Profile information"
+                        description="Update your photo, name, and email. Your photo appears in the member panel header."
+                    >
                     <form
                         className="space-y-6"
                         onSubmit={(e) => {
                             e.preventDefault();
-                            profileForm.patch('/account/profile');
+                            profileForm.patch('/account/profile', {
+                                preserveScroll: true,
+                                forceFormData: profileForm.data.avatar instanceof File,
+                                onSuccess: () => {
+                                    profileForm.setData('avatar', null);
+                                    if (photoPreview?.startsWith('blob:')) {
+                                        URL.revokeObjectURL(photoPreview);
+                                    }
+                                    setPhotoPreview(null);
+                                    if (fileInputRef.current) {
+                                        fileInputRef.current.value = '';
+                                    }
+                                },
+                            });
                         }}
                     >
+                        <div>
+                            <Label className="mb-2 block">Profile photo</Label>
+                            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+                                <div className="bg-muted relative size-24 shrink-0 overflow-hidden rounded-full border">
+                                    {displayPhoto ? (
+                                        <img src={displayPhoto} alt="" className="size-full object-cover" />
+                                    ) : (
+                                        <div className="text-muted-foreground flex size-full items-center justify-center text-xs">No photo</div>
+                                    )}
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/jpeg,image/png,image/webp,image/gif"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (photoPreview?.startsWith('blob:')) {
+                                                URL.revokeObjectURL(photoPreview);
+                                            }
+                                            profileForm.setData('avatar', file ?? null);
+                                            setPhotoPreview(file ? URL.createObjectURL(file) : null);
+                                        }}
+                                    />
+                                    <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                                        Choose image
+                                    </Button>
+                                    {profileForm.data.avatar ? (
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => {
+                                                profileForm.setData('avatar', null);
+                                                if (photoPreview?.startsWith('blob:')) {
+                                                    URL.revokeObjectURL(photoPreview);
+                                                }
+                                                setPhotoPreview(null);
+                                                if (fileInputRef.current) {
+                                                    fileInputRef.current.value = '';
+                                                }
+                                            }}
+                                        >
+                                            Clear selection
+                                        </Button>
+                                    ) : null}
+                                </div>
+                            </div>
+                            {profileForm.errors.avatar ? (
+                                <p className="text-destructive mt-2 text-sm">{profileForm.errors.avatar}</p>
+                            ) : null}
+                        </div>
+
                         <div>
                             <Label htmlFor="name">Name</Label>
                             <Input
@@ -123,16 +208,9 @@ export default function Edit({ mustVerifyEmail, status, user }: Props) {
                             ) : null}
                         </div>
                     </form>
-                </section>
+                    </PanelWidget>
 
-                <section className="bg-card rounded-xl border p-6 shadow-sm sm:p-8">
-                    <header className="mb-6">
-                        <h2 className="text-lg font-semibold">Update password</h2>
-                        <p className="text-muted-foreground mt-1 text-sm">
-                            Use a long, random password to keep your account secure.
-                        </p>
-                    </header>
-
+                    <PanelWidget title="Update password" description="Use a long, random password to keep your account secure.">
                     <form
                         className="space-y-6"
                         onSubmit={(e) => {
@@ -201,16 +279,12 @@ export default function Edit({ mustVerifyEmail, status, user }: Props) {
                             ) : null}
                         </div>
                     </form>
-                </section>
+                    </PanelWidget>
 
-                <section className="bg-card rounded-xl border p-6 shadow-sm sm:p-8">
-                    <header className="mb-6">
-                        <h2 className="text-lg font-semibold">Delete account</h2>
-                        <p className="text-muted-foreground mt-1 text-sm">
-                            Once deleted, your data is permanently removed. Download anything you need first.
-                        </p>
-                    </header>
-
+                    <PanelWidget
+                        title="Delete account"
+                        description="Once deleted, your data is permanently removed. Download anything you need first."
+                    >
                     <Button type="button" variant="destructive" onClick={() => setDeleteOpen(true)}>
                         Delete account
                     </Button>
@@ -264,8 +338,8 @@ export default function Edit({ mustVerifyEmail, status, user }: Props) {
                             </div>
                         </DialogContent>
                     </Dialog>
-                </section>
-            </div>
+                    </PanelWidget>
+                </div>
             </AccountShell>
         </SiteLayout>
     );

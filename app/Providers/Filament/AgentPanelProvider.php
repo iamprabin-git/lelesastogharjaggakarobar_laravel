@@ -27,16 +27,17 @@ class AgentPanelProvider extends PanelProvider
         return $panel
             ->id('agent')
             ->path('agent')
+            ->brandName('Lele Sasto Ghar · Agent')
             ->login(AgentPanelLogin::class)
             ->darkMode(true)
             ->authGuard('agent')
             ->viteTheme('resources/css/filament/agent/theme.css')
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::hex('#5f5af0'),
                 'gray' => Color::Zinc,
                 'danger' => Color::Rose,
                 'success' => Color::Emerald,
-                'warning' => Color::Amber,
+                'warning' => Color::hex('#e8c547'),
             ])
             ->font('Inter')
             ->sidebarCollapsibleOnDesktop()
