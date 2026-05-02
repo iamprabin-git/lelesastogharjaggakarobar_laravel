@@ -16,6 +16,15 @@ class TeamMember extends Model
         'instagram',
         'tiktok',
         'linkedin',
+        'email',
+        'phone',
         'is_active',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
 }

@@ -4,28 +4,53 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\AboutSection;
+use App\Models\AboutService;
+use App\Models\TeamMember;
+use App\Support\AboutPageData;
 use Inertia\Inertia;
 
 class AboutController extends Controller
 {
     public function index()
     {
-        $about = AboutSection::first();
+        $services = AboutService::query()
+            ->active()
+            ->ordered()
+            ->get(['id', 'title', 'description', 'icon'])
+            ->map(fn (AboutService $s) => [
+                'id' => $s->id,
+                'title' => $s->title,
+                'description' => $s->description,
+                'icon' => $s->icon,
+            ])
+            ->values()
+            ->all();
+
+        $teamMembers = TeamMember::query()
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->get()
+            ->map(fn (TeamMember $m) => [
+                'id' => $m->id,
+                'name' => $m->name,
+                'position' => $m->position,
+                'bio' => $m->bio,
+                'photo' => $m->photo ? asset('storage/'.$m->photo) : null,
+                'facebook' => $m->facebook,
+                'whatsapp' => $m->whatsapp,
+                'instagram' => $m->instagram,
+                'tiktok' => $m->tiktok,
+                'linkedin' => $m->linkedin,
+                'email' => $m->email,
+                'phone' => $m->phone,
+            ])
+            ->values()
+            ->all();
 
         return Inertia::render('About', [
-            'about' => $about
-                ? [
-                    'hero_title' => $about->hero_title,
-                    'hero_description' => $about->hero_description ? strip_tags($about->hero_description) : null,
-                    'hero_image' => $about->hero_image ? asset('storage/'.$about->hero_image) : null,
-                    'about_image' => $about->about_image ? asset('storage/'.$about->about_image) : null,
-                    'experience_years' => $about->experience_years,
-                    'properties_sold' => $about->properties_sold,
-                    'happy_clients' => $about->happy_clients,
-                    'mission' => $about->mission,
-                    'vision' => $about->vision,
-                ]
-                : null,
+            'about' => AboutPageData::inertia(AboutSection::first()),
+            'services' => $services,
+            'teamMembers' => $teamMembers,
         ]);
     }
 }

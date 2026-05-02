@@ -2,7 +2,7 @@
 export default {
   content: [
     "./resources/**/*.blade.php",
-    "./resources/**/*.js",
+    "./resources/**/*.{js,ts,jsx,tsx}",
     "./resources/**/*.vue",
     "./node_modules/flowbite/**/*.js",  // important for flowbite
   ],

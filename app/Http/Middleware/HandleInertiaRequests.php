@@ -40,6 +40,14 @@ class HandleInertiaRequests extends Middleware
                 ->all();
         }
 
+        $whatsappDigits = '';
+        if ($company?->whatsapp) {
+            $whatsappDigits = preg_replace('/\D/', '', (string) $company->whatsapp);
+        }
+        if ($whatsappDigits === '') {
+            $whatsappDigits = preg_replace('/\D/', '', (string) config('support.whatsapp_digits', ''));
+        }
+
         return [
             ...parent::share($request),
             'recent_property_searches' => $recentPropertySearches,
@@ -88,6 +96,7 @@ class HandleInertiaRequests extends Middleware
                 'primary_color' => $company->primary_color,
                 'secondary_color' => $company->secondary_color,
             ] : null,
+            'whatsapp_chat_digits' => $whatsappDigits !== '' ? $whatsappDigits : null,
         ];
     }
 }

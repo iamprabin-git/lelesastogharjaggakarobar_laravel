@@ -36,11 +36,11 @@ function ContactDetail({
     return (
         <div
             className={cn(
-                'border-border/80 bg-card/80 hover:border-primary/20 flex gap-4 rounded-2xl border p-5 shadow-sm backdrop-blur-sm transition-colors',
+                'border-border/80 bg-card/80 hover:border-primary/20 flex gap-3 rounded-2xl border p-4 shadow-sm backdrop-blur-sm transition-colors sm:gap-4 sm:p-5',
                 className,
             )}
         >
-            <div className="bg-primary/10 text-primary flex h-11 w-11 shrink-0 items-center justify-center rounded-xl">
+            <div className="bg-primary/10 text-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11">
                 <Icon className="h-5 w-5" aria-hidden />
             </div>
             <div className="min-w-0 flex-1">
@@ -93,12 +93,12 @@ export default function Contact() {
                 </div>
             </section>
 
-            <section className="container mx-auto max-w-6xl px-4 pb-20">
-                <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
+            <section className="container mx-auto max-w-6xl px-3 pb-16 sm:px-4 sm:pb-20">
+                <div className="grid gap-10 lg:grid-cols-12 lg:gap-14 xl:gap-16">
                     {/* Sidebar — company info */}
                     <div className="space-y-8 lg:col-span-5">
                         <div>
-                            <h2 className="text-foreground text-xl font-semibold tracking-tight">{displayName}</h2>
+                            <h2 className="text-foreground break-words text-lg font-semibold tracking-tight sm:text-xl">{displayName}</h2>
                             <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
                                 Prefer a quick call or visit? Use the details below. For written requests, use the secure form — it
                                 goes straight to our inbox.
@@ -160,14 +160,14 @@ export default function Contact() {
                     {/* Form */}
                     <div className="lg:col-span-7">
                         <Card className="border-border/80 shadow-lg ring-1 ring-black/5 dark:ring-white/10">
-                            <CardHeader className="space-y-1 border-b pb-6">
-                                <CardTitle className="text-xl">Send a message</CardTitle>
+                            <CardHeader className="space-y-1 border-b px-4 pb-5 pt-6 sm:px-6 sm:pb-6">
+                                <CardTitle className="text-lg sm:text-xl">Send a message</CardTitle>
                                 <CardDescription>
                                     All fields marked with <span className="text-destructive">*</span> are required. We use your email
                                     only to reply to this inquiry.
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="pt-8">
+                            <CardContent className="px-4 pb-6 pt-6 sm:px-6 sm:pt-8">
                                 <form
                                     className="space-y-6"
                                     onSubmit={(e) => {
@@ -175,7 +175,7 @@ export default function Contact() {
                                         form.post('/contact', { preserveScroll: true });
                                     }}
                                 >
-                                    <div className="grid gap-6 sm:grid-cols-2">
+                                    <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="name">
                                                 Full name <span className="text-destructive">*</span>
@@ -242,7 +242,12 @@ export default function Contact() {
                                             <p className="text-destructive text-xs">{form.errors.message}</p>
                                         )}
                                     </div>
-                                    <Button type="submit" size="lg" disabled={form.processing} className="h-11 w-full sm:w-auto sm:min-w-30">
+                                    <Button
+                                        type="submit"
+                                        size="lg"
+                                        disabled={form.processing}
+                                        className="min-h-11 w-full touch-manipulation sm:w-auto sm:min-w-30"
+                                    >
                                         {form.processing ? (
                                             'Sending…'
                                         ) : (
@@ -259,11 +264,11 @@ export default function Contact() {
                 </div>
 
                 {/* Map */}
-                <div className="border-border mt-16 overflow-hidden rounded-2xl border shadow-sm">
+                <div className="border-border mt-12 overflow-hidden rounded-xl border shadow-sm sm:mt-16 sm:rounded-2xl">
                     <iframe
                         title="Office location"
                         src={mapSrc}
-                        className="h-72 w-full md:h-96"
+                        className="aspect-video min-h-[220px] w-full sm:aspect-auto sm:h-72 md:h-96"
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
                     />

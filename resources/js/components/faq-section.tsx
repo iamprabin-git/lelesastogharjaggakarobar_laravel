@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import { sanitizeRichHtml } from '@/lib/sanitize-html';
 import { cn } from '@/lib/utils';
 
 export type FaqEntry = {
@@ -75,8 +76,8 @@ export function FaqSection({
                                             inside the answer are styled correctly.
                                         */}
                                         <div
-                                            className="prose prose-sm max-w-none dark:prose-invert"
-                                            dangerouslySetInnerHTML={{ __html: f.answer }}
+                                            className="prose prose-sm max-w-none dark:prose-invert [&_img]:max-w-full"
+                                            dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(f.answer) }}
                                         />
                                     </AccordionContent>
                                 </AccordionItem>

@@ -2,6 +2,7 @@ import { Head, usePage } from '@inertiajs/react';
 import type { PropsWithChildren, ReactNode } from 'react';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
+import { WhatsAppFloat } from '@/components/whatsapp-float';
 
 type Flash = { success?: string | null; error?: string | null; status?: string | null };
 
@@ -21,7 +22,7 @@ export function SiteLayout({
     return (
         <>
             <Head title={pageTitle} />
-            <div className="flex min-h-screen flex-col">
+            <div className="flex min-h-screen flex-col overflow-x-hidden">
                 {!accountPanelOnly ? <SiteHeader /> : null}
                 <main className="flex-1">
                     {flash?.success && (
@@ -47,6 +48,7 @@ export function SiteLayout({
                     {children}
                 </main>
                 {!accountPanelOnly ? <SiteFooter /> : null}
+                {!accountPanelOnly ? <WhatsAppFloat /> : null}
             </div>
         </>
     );

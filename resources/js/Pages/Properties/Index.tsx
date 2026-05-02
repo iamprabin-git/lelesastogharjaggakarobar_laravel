@@ -6,6 +6,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PropertyCardLink } from '@/components/property-card-link';
 import { SiteLayout } from '@/layouts/site-layout';
+import { sanitizeRichHtml } from '@/lib/sanitize-html';
 import type { PropertyCard } from '@/types/property';
 
 const ALL = '__all__';
@@ -135,7 +136,7 @@ export default function PropertiesIndex({
                     <Pagination className="mt-10">
                         <PaginationContent>
                             {latestProperties.links.map((link, i) => {
-                                const inner = <span dangerouslySetInnerHTML={{ __html: link.label }} />;
+                                const inner = <span dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(link.label) }} />;
                                 if (!link.url) {
                                     return (
                                         <PaginationItem key={i}>

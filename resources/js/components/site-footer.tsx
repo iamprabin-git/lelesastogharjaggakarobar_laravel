@@ -154,6 +154,22 @@ export function SiteFooter() {
                             </Link>
                         </li>
                         <li>
+                            <Link
+                                href="/spotlight/agent-of-the-month"
+                                className="transition-colors hover:text-black dark:hover:text-white"
+                            >
+                                Agent of the month
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                href="/spotlight/buyer-of-the-month"
+                                className="transition-colors hover:text-black dark:hover:text-white"
+                            >
+                                Buyer of the month
+                            </Link>
+                        </li>
+                        <li>
                             <Link href="/privacy-policy" className="transition-colors hover:text-black dark:hover:text-white">
                                 Privacy
                             </Link>

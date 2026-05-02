@@ -55,6 +55,7 @@ class InertiaSerializers
         return [
             'id' => $p->id,
             'title' => $p->title,
+            'view_count' => (int) ($p->view_count ?? 0),
             'description' => $p->description,
             'price' => (float) $p->price,
             'type' => $p->type,

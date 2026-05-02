@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class AboutSectionResource extends Resource
 {
@@ -20,7 +21,11 @@ class AboutSectionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInformationCircle;
 
-    protected static ?string $recordTitleAttribute = 'about';
+    protected static ?string $recordTitleAttribute = 'hero_title';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Website';
+
+    protected static ?int $navigationSort = 25;
 
     public static function form(Schema $schema): Schema
     {

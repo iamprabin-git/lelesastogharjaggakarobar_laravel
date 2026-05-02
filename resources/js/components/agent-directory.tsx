@@ -31,45 +31,28 @@ function socialBtnClass(): string {
 
 export function AgentDirectoryGrid({ agents }: { agents: PublicAgent[] }) {
     return (
-        <ul className="mx-auto grid max-w-[1400px] grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mx-auto grid max-w-[1400px] grid-cols-1 gap-5 px-1 sm:gap-8 sm:px-0 md:grid-cols-2 lg:grid-cols-4">
             {agents.map((agent) => (
                 <li
                     key={agent.id}
                     tabIndex={0}
-                    aria-label={`${agent.name}. Hover to flip for contact details. Press Enter to view their property listings.`}
-                    className="group relative h-[340px] cursor-pointer list-none rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-[#5f5af0]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-300 dark:focus-visible:ring-offset-gray-900"
-                    onClick={(e) => {
-                        const target = e.target as HTMLElement;
-                        if (target.closest('a') || target.closest('button')) {
-                            return;
-                        }
-                        router.visit(`/properties?agent=${agent.id}`);
-                    }}
-                    onKeyDown={(e) => {
-                        if (e.key !== 'Enter' && e.key !== ' ') {
-                            return;
-                        }
-                        const target = e.target as HTMLElement;
-                        if (target.closest('a') || target.closest('button')) {
-                            return;
-                        }
-                        e.preventDefault();
-                        router.visit(`/properties?agent=${agent.id}`);
-                    }}
+                    aria-label={`${agent.name}. Tap or hover to flip for contact details. Use View listings to open properties.`}
+                    className="group relative h-[300px] cursor-pointer touch-manipulation list-none rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-[#5f5af0]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-300 sm:h-[320px] lg:h-[340px] dark:focus-visible:ring-offset-gray-900"
                 >
-                    <div className="pointer-events-none absolute bottom-14 left-0 right-0 z-[4] flex justify-center px-4">
-                        <span className="rounded-full bg-black/55 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white shadow-md backdrop-blur-sm dark:bg-black/65">
-                            Click to view listings
+                    <div className="pointer-events-none absolute bottom-11 left-0 right-0 z-[4] flex justify-center px-3 sm:bottom-14 sm:px-4">
+                        <span className="rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white shadow-md backdrop-blur-sm max-[380px]:max-w-[90%] max-[380px]:truncate dark:bg-black/65 sm:px-3 sm:text-[11px]">
+                            <span className="sm:hidden">Tap · flip for contacts</span>
+                            <span className="hidden sm:inline">Hover / tap · flip for contacts</span>
                         </span>
                     </div>
 
                     <div className="h-full w-full [perspective:1100px]">
-                        <div className="relative h-full w-full duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] [transform-style:preserve-3d] motion-safe:transition-transform group-hover:[transform:rotateY(180deg)] group-focus-within:[transform:rotateY(180deg)]">
+                        <div className="relative h-full w-full duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] [transform-style:preserve-3d] motion-safe:transition-transform [@media(hover:hover)]:group-hover:[transform:rotateY(180deg)] group-focus-within:[transform:rotateY(180deg)]">
                             {/* Back first in DOM — front stacks above for pointer hit-testing */}
-                            <div className="absolute inset-0 z-[1] flex flex-col rounded-2xl border border-white/15 bg-gradient-to-br from-[#5f5af0] via-[#534ae6] to-[#4338ca] p-5 text-white shadow-[0_16px_48px_-12px_rgba(67,56,202,0.55)] [backface-visibility:hidden] [transform:rotateY(180deg)] dark:from-zinc-800 dark:via-zinc-900 dark:to-zinc-950 dark:shadow-black/50">
+                            <div className="absolute inset-0 z-[1] flex flex-col rounded-2xl border border-white/15 bg-gradient-to-br from-[#5f5af0] via-[#534ae6] to-[#4338ca] p-4 text-white shadow-[0_16px_48px_-12px_rgba(67,56,202,0.55)] [backface-visibility:hidden] [transform:rotateY(180deg)] sm:p-5 dark:from-zinc-800 dark:via-zinc-900 dark:to-zinc-950 dark:shadow-black/50">
                                 <div className="border-b border-white/20 pb-3">
                                     <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/75">Contact</p>
-                                    <p className="mt-1 text-lg font-semibold leading-snug">{agent.name}</p>
+                                    <p className="mt-1 break-words text-base font-semibold leading-snug sm:text-lg">{agent.name}</p>
                                 </div>
 
                                 <div className="mt-4 flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto text-sm">
@@ -160,7 +143,7 @@ export function AgentDirectoryGrid({ agents }: { agents: PublicAgent[] }) {
 
                                 <button
                                     type="button"
-                                    className="pointer-events-auto mt-3 w-full shrink-0 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#4338ca] shadow-md transition-colors hover:bg-white/95 dark:text-zinc-900"
+                                    className="pointer-events-auto mt-3 min-h-11 w-full shrink-0 touch-manipulation rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#4338ca] shadow-md transition-colors hover:bg-white/95 dark:text-zinc-900"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         router.visit(`/properties?agent=${agent.id}`);
@@ -188,11 +171,23 @@ export function AgentDirectoryGrid({ agents }: { agents: PublicAgent[] }) {
                                     )}
                                     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 to-transparent dark:from-black/70" />
                                 </div>
-                                <div className="relative shrink-0 bg-white px-4 py-4 text-center dark:bg-zinc-950">
-                                    <p className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-white">{agent.name}</p>
+                                <div className="relative shrink-0 bg-white px-3 py-3 text-center dark:bg-zinc-950 sm:px-4 sm:py-4">
+                                    <p className="break-words text-base font-semibold tracking-tight text-zinc-900 sm:text-lg dark:text-white">
+                                        {agent.name}
+                                    </p>
                                     <p className="text-muted-foreground mt-1 text-xs font-medium uppercase tracking-[0.14em]">
                                         Real estate agent
                                     </p>
+                                    <button
+                                        type="button"
+                                        className="text-primary hover:text-primary/85 mt-3 min-h-10 w-full max-w-[14rem] touch-manipulation text-xs font-semibold underline-offset-4 hover:underline sm:mt-2 sm:inline-block sm:w-auto sm:max-w-none sm:text-sm"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            router.visit(`/properties?agent=${agent.id}`);
+                                        }}
+                                    >
+                                        View listings →
+                                    </button>
                                 </div>
                             </div>
                         </div>

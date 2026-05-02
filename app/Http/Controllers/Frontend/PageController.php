@@ -9,6 +9,7 @@ use App\Mail\AgentRequestNotification;
 use App\Mail\AgentWelcomeMail;
 use App\Mail\PropertyInquiryAdminMail;
 use App\Mail\PropertyInquiryAgentMail;
+use App\Models\AboutSection;
 use App\Models\Admin;
 use App\Models\Advertisement;
 use App\Models\Agent;
@@ -17,6 +18,7 @@ use App\Models\GoogleReview;
 use App\Models\Property;
 use App\Models\PropertyInquiry;
 use App\Services\TwilioMessagingService;
+use App\Support\AboutPageData;
 use App\Support\InertiaSerializers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +39,6 @@ class PageController extends Controller
         $averageRating = round($reviews->avg('rating') ?? 0, 1);
         $totalReviews = $reviews->count();
 
-        $about = \App\Models\AboutSection::first();
         $advertisements = Advertisement::where('is_active', true)->get();
 
         return Inertia::render('Home', [
@@ -48,15 +49,7 @@ class PageController extends Controller
             'reviews' => InertiaSerializers::googleReviews($reviews),
             'averageRating' => $averageRating,
             'totalReviews' => $totalReviews,
-            'about' => $about ? [
-                'hero_title' => $about->hero_title,
-                'hero_description' => strip_tags($about->hero_description),
-                'hero_image' => $about->hero_image ? asset('storage/'.$about->hero_image) : null,
-                'about_image' => $about->about_image ? asset('storage/'.$about->about_image) : null,
-                'experience_years' => $about->experience_years,
-                'properties_sold' => $about->properties_sold,
-                'happy_clients' => $about->happy_clients,
-            ] : null,
+            'about' => AboutPageData::inertia(AboutSection::first()),
             'advertisements' => InertiaSerializers::advertisements($advertisements),
             'faqs' => Faq::activeForInertia(),
         ]);

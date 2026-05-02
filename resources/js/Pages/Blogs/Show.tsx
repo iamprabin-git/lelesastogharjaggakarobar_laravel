@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PropertyCardLink } from '@/components/property-card-link';
 import { SiteLayout } from '@/layouts/site-layout';
+import { sanitizeRichHtml } from '@/lib/sanitize-html';
 import type { PropertyCard } from '@/types/property';
 
 type BlogDetail = {
@@ -33,12 +34,13 @@ export default function BlogShow({
     latestProperties: PropertyCard[];
 }) {
     const dateStr = blog.created_at ? new Date(blog.created_at).toLocaleDateString() : '';
+    const contentSafe = sanitizeRichHtml(blog.content);
 
     return (
         <SiteLayout title={blog.title}>
             <article className="container mx-auto px-4 py-12">
                 {blog.image && (
-                    <div className="relative mx-auto mb-10 aspect-[21/9] max-w-5xl overflow-hidden rounded-2xl border">
+                    <div className="relative mx-auto mb-8 aspect-video max-h-[360px] w-full max-w-5xl overflow-hidden rounded-2xl border sm:mb-10 sm:aspect-[21/9] sm:max-h-none">
                         <img src={blog.image} alt="" className="h-full w-full object-cover" />
                     </div>
                 )}
@@ -52,7 +54,7 @@ export default function BlogShow({
                     <Separator className="my-8" />
                     <div
                         className="prose-article mt-10 space-y-4 text-sm leading-relaxed [&_img]:max-w-full [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:mt-6 [&_p]:text-muted-foreground [&_ul]:my-4 [&_ul]:list-inside [&_ul]:list-disc"
-                        dangerouslySetInnerHTML={{ __html: blog.content }}
+                        dangerouslySetInnerHTML={{ __html: contentSafe }}
                     />
                 </div>
 

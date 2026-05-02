@@ -23,11 +23,13 @@ class AboutSectionForm
 
                 FileUpload::make('hero_image')
                     ->image()
-                    ->directory('about/hero'),
+                    ->directory('about/hero')
+                    ->nullable(),
 
                 FileUpload::make('about_image')
                     ->image()
-                    ->directory('about/about'),
+                    ->directory('about/about')
+                    ->nullable(),
 
                 TextInput::make('experience_years')
                     ->label('Experience (years)')

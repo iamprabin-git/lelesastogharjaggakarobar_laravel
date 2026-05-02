@@ -150,6 +150,8 @@ class PropertyController extends Controller
             abort(404);
         }
 
+        $property->increment('view_count');
+
         $property->load(['agent', 'amenities']);
 
         $approvedReviews = $property->approvedReviews()->with('user')->latest()->get();

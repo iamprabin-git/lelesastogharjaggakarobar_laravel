@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\PricingController;
 use App\Http\Controllers\Frontend\PropertyController;
 use App\Http\Controllers\Frontend\QrController;
+use App\Http\Controllers\Frontend\SpotlightController;
 use App\Http\Controllers\Frontend\StaticLegalController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
@@ -37,6 +38,8 @@ Route::post('/agent/{agent}/contact', [PageController::class, 'contactAgent'])
 
 // Static pages
 Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::get('/spotlight/agent-of-the-month', [SpotlightController::class, 'agentOfMonth'])->name('spotlight.agent');
+Route::get('/spotlight/buyer-of-the-month', [SpotlightController::class, 'buyerOfMonth'])->name('spotlight.buyer');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'submit'])
     ->middleware('throttle:15,1')

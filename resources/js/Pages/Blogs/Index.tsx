@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink } from '@/components/ui/pagination';
 import { SiteLayout } from '@/layouts/site-layout';
+import { sanitizeRichHtml } from '@/lib/sanitize-html';
 
 type BlogRow = {
     id: number;
@@ -65,7 +66,7 @@ export default function BlogsIndex({ blogs }: { blogs: PaginatedBlogs }) {
                     <Pagination className="mt-12">
                         <PaginationContent>
                             {blogs.links.map((link, i) => {
-                                const inner = <span dangerouslySetInnerHTML={{ __html: link.label }} />;
+                                const inner = <span dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(link.label) }} />;
                                 if (!link.url) {
                                     return (
                                         <PaginationItem key={i}>

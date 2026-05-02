@@ -1,5 +1,4 @@
 import { Link, useForm, usePage } from '@inertiajs/react';
-import DOMPurify from 'dompurify';
 import { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -9,6 +8,7 @@ import {
     Car,
     Coffee,
     Dumbbell,
+    Eye,
     Hospital,
     Landmark,
     MapPin,
@@ -35,6 +35,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { sanitizeRichHtml } from '@/lib/sanitize-html';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { PropertyCardLink } from '@/components/property-card-link';
@@ -78,6 +79,7 @@ type Agent = {
 type PropertyDetail = {
     id: number;
     title: string;
+    view_count: number;
     description: string | null;
     price: number;
     type: string;
@@ -198,7 +200,19 @@ export default function PropertyShow({
                         )}
 
                         <div className="bg-card rounded-2xl border p-5 shadow-sm sm:p-6">
-                            <h1 className="mb-2 text-3xl font-bold tracking-tight">{property.title}</h1>
+                            <div className="mb-2 flex flex-wrap items-start justify-between gap-3 gap-y-2">
+                                <h1 className="min-w-0 flex-1 text-3xl font-bold tracking-tight">{property.title}</h1>
+                                <div
+                                    className="text-muted-foreground flex shrink-0 items-center gap-1.5 rounded-lg border bg-muted/40 px-3 py-1.5 text-sm tabular-nums"
+                                    title="Total page visits"
+                                >
+                                    <Eye className="text-primary size-4 shrink-0" aria-hidden />
+                                    <span>
+                                        {property.view_count.toLocaleString()}{' '}
+                                        {property.view_count === 1 ? 'visit' : 'visits'}
+                                    </span>
+                                </div>
+                            </div>
                             {[
                                 property.location,
                                 property.city,
@@ -216,27 +230,31 @@ export default function PropertyShow({
                             ) : null}
                             <p className="text-primary mt-4 text-3xl font-bold">Rs. {property.price.toLocaleString()}</p>
 
-                            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
-                                <div className="bg-muted/50 flex flex-col items-center justify-center gap-1 rounded-xl border px-2 py-4 text-center sm:flex-row sm:gap-3">
-                                    <BedDouble className="text-primary size-5 shrink-0 sm:size-6" aria-hidden />
-                                    <div>
-                                        <p className="text-base font-semibold tabular-nums sm:text-lg">{property.bedrooms ?? 0}</p>
-                                        <p className="text-muted-foreground text-[10px] uppercase sm:text-xs">Beds</p>
-                                    </div>
+                            <div className="text-muted-foreground mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-border/60 py-2.5 text-[11px] sm:gap-x-6">
+                                <div className="flex items-center gap-1.5">
+                                    <BedDouble className="text-primary/75 size-3.5 shrink-0" aria-hidden />
+                                    <span className="tabular-nums leading-none">
+                                        <span className="text-foreground text-[13px] font-semibold">{property.bedrooms ?? 0}</span>{' '}
+                                        <span className="font-medium tracking-wide uppercase">beds</span>
+                                    </span>
                                 </div>
-                                <div className="bg-muted/50 flex flex-col items-center justify-center gap-1 rounded-xl border px-2 py-4 text-center sm:flex-row sm:gap-3">
-                                    <Bath className="text-primary size-5 shrink-0 sm:size-6" aria-hidden />
-                                    <div>
-                                        <p className="text-base font-semibold tabular-nums sm:text-lg">{property.bathrooms ?? 0}</p>
-                                        <p className="text-muted-foreground text-[10px] uppercase sm:text-xs">Baths</p>
-                                    </div>
+                                <span className="hidden h-3 w-px shrink-0 bg-border sm:block" aria-hidden />
+                                <div className="flex items-center gap-1.5">
+                                    <Bath className="text-primary/75 size-3.5 shrink-0" aria-hidden />
+                                    <span className="tabular-nums leading-none">
+                                        <span className="text-foreground text-[13px] font-semibold">{property.bathrooms ?? 0}</span>{' '}
+                                        <span className="font-medium tracking-wide uppercase">baths</span>
+                                    </span>
                                 </div>
-                                <div className="bg-muted/50 flex flex-col items-center justify-center gap-1 rounded-xl border px-2 py-4 text-center sm:flex-row sm:gap-3">
-                                    <Maximize2 className="text-primary size-5 shrink-0 sm:size-6" aria-hidden />
-                                    <div>
-                                        <p className="text-base font-semibold tabular-nums sm:text-lg">{property.area ?? 0}</p>
-                                        <p className="text-muted-foreground text-[10px] uppercase sm:text-xs">Sq.ft</p>
-                                    </div>
+                                <span className="hidden h-3 w-px shrink-0 bg-border sm:block" aria-hidden />
+                                <div className="flex items-center gap-1.5">
+                                    <Maximize2 className="text-primary/75 size-3.5 shrink-0" aria-hidden />
+                                    <span className="tabular-nums leading-none">
+                                        <span className="text-foreground text-[13px] font-semibold">
+                                            {(property.area ?? 0).toLocaleString()}
+                                        </span>{' '}
+                                        <span className="font-medium tracking-wide uppercase">sq.ft</span>
+                                    </span>
                                 </div>
                             </div>
 
@@ -301,9 +319,7 @@ export default function PropertyShow({
                                                     '[&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6',
                                                 )}
                                                 dangerouslySetInnerHTML={{
-                                                    __html: DOMPurify.sanitize(property.description, {
-                                                        USE_PROFILES: { html: true },
-                                                    }),
+                                                    __html: sanitizeRichHtml(property.description),
                                                 }}
                                             />
                                         </CardContent>

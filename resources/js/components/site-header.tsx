@@ -1,5 +1,16 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { LayoutDashboard, LogOut, Menu, MessageCircle, Moon, Sun, UserCircle } from 'lucide-react';
+import {
+    ChevronDown,
+    LayoutDashboard,
+    LogOut,
+    Mail,
+    Menu,
+    MessageCircle,
+    Moon,
+    Phone,
+    Sun,
+    UserCircle,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -77,6 +88,15 @@ const nav = [
     { href: '/properties', label: 'Properties' },
     { href: '/contact', label: 'Contact' },
     { href: '/blogs', label: 'Blog' },
+];
+
+const moreNav = [
+    { href: '/faqs', label: 'FAQs' },
+    { href: '/pricing', label: 'Pricing' },
+    { href: '/spotlight/agent-of-the-month', label: 'Agent of the month' },
+    { href: '/spotlight/buyer-of-the-month', label: 'Buyer of the month' },
+    { href: '/privacy-policy', label: 'Privacy' },
+    { href: '/terms', label: 'Terms' },
 ];
 
 type SessionKind = 'user' | 'agent' | 'admin';
@@ -234,9 +254,33 @@ export function SiteHeader() {
     return (
         <header className="sticky top-0 z-50 w-full border-b border-zinc-200/70 bg-white/95 shadow-none backdrop-blur-md dark:border-zinc-800/70 dark:bg-zinc-950/95">
             <div className="hidden items-center justify-between bg-primary px-4 py-2 text-sm text-primary-foreground md:flex md:px-6">
-                <div className="flex flex-wrap items-center gap-4">
-                    <span>{company?.phone ?? '+977-9765726294'}</span>
-                    <span className="truncate">{company?.email ?? 'info@example.com'}</span>
+                <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
+                    <span className="inline-flex items-center gap-2">
+                        <Phone className="size-4 shrink-0 opacity-90" aria-hidden />
+                        {company?.phone ? (
+                            <a
+                                href={`tel:${company.phone.replace(/\s/g, '')}`}
+                                className="hover:text-primary-foreground/85 underline-offset-2 hover:underline"
+                            >
+                                {company.phone}
+                            </a>
+                        ) : (
+                            <span>+977-9765726294</span>
+                        )}
+                    </span>
+                    <span className="inline-flex max-w-[min(100vw-8rem,28rem)] items-center gap-2">
+                        <Mail className="size-4 shrink-0 opacity-90" aria-hidden />
+                        {company?.email ? (
+                            <a
+                                href={`mailto:${company.email}`}
+                                className="truncate hover:text-primary-foreground/85 underline-offset-2 hover:underline"
+                            >
+                                {company.email}
+                            </a>
+                        ) : (
+                            <span className="truncate">info@example.com</span>
+                        )}
+                    </span>
                 </div>
                 <div className="flex items-center gap-3">
                     {company?.facebook && (
@@ -275,6 +319,28 @@ export function SiteHeader() {
                             {item.label}
                         </Link>
                     ))}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                className="text-muted-foreground hover:text-primary h-9 gap-1 px-2 text-sm font-medium text-zinc-600 dark:text-zinc-400"
+                            >
+                                More
+                                <ChevronDown className="size-4 opacity-70" aria-hidden />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-52">
+                            <DropdownMenuLabel className="text-muted-foreground text-xs font-normal">Explore more</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {moreNav.map((item) => (
+                                <DropdownMenuItem key={item.href} asChild>
+                                    <Link href={item.href} className="cursor-pointer">
+                                        {item.label}
+                                    </Link>
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                     {session ? (
                         <ProfileDropdown alignEnd />
                     ) : (
@@ -311,6 +377,21 @@ export function SiteHeader() {
                             </SheetHeader>
                             <nav className="mt-6 flex flex-col gap-1 px-2">
                                 {nav.map((item) => (
+                                    <SheetClose asChild key={item.href}>
+                                        <Link
+                                            href={item.href}
+                                            className={cn(
+                                                'rounded-md px-3 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800/70',
+                                            )}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    </SheetClose>
+                                ))}
+                                <p className="text-muted-foreground px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wide">
+                                    More
+                                </p>
+                                {moreNav.map((item) => (
                                     <SheetClose asChild key={item.href}>
                                         <Link
                                             href={item.href}
